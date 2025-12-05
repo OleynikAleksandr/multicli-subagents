@@ -1,51 +1,34 @@
 # План разработки (Development TODO Plan)
 
 ## Правила выполнения (Execution Rules):
-- **TODO Plan** состоит из Phase (Фаз). В каждой Phase некоторое колличество - Stream (стрим), в каждом Стриме - некоторое кол-во подзадач.
-- Каждая подзадача должна затрагивать не более 3 файлов.
-- **Gates**: после выполнения каждой подзадачи — Git Commit с релевантным описанием.
-- **Real-time Документация**: изменения архитектуры требуют обновления документации ДО коммита.
+- Каждая подзадача — не более 3 файлов.
+- **Gates**: после подзадачи — Git Commit.
 
 ---
 
-## Phase 1 — MVP: Базовая инфраструктура Sub-Agent (owner: AI, updated: 2025-12-05)
+## Phase 1 — MVP: Базовая инфраструктура Sub-Agent (updated: 2025-12-05)
 
-### Stream 1.1: Создание скрипта `codex-setup-subagents.sh`
+### Stream 1.1: Создание скрипта — DONE ✅
 
-1. [DONE] **Создать базовый скрипт** — `5b2ab8a`
-   - Файлы: `codex-setup-subagents.sh`
-   - Задача: Скрипт создаёт директории
+1. [DONE] Базовый скрипт — `5b2ab8a`
+2. [DONE] Исправить путь для slash-команды — `db8d05d`
+3. [DONE] Добавить --skip-git-repo-check — `7bc1c3f`
 
-2. [DONE] **Исправить путь для slash-команды** — `db8d05d`
-   - Файлы: `codex-setup-subagents.sh`, `doc/Project_Docs/SubAgent_Architecture.md`
-   - Задача: Slash-команда в `~/.codex/prompts/` (глобально), вызов `/prompts:subagent`
+### Stream 1.2: Верификация — DONE ✅
 
-3. [DONE] **Пример Sub-Agent'а**
-   - Файлы: скрипт создаёт `.codex/subagents/example/example.md`
-
----
-
-### Stream 1.2: Верификация
-
-4. [IN_PROGRESS] **Ручное тестирование**
-   - Задача: Протестировать скрипт
-   - Проверки:
-     - [x] Структура директорий создаётся
-     - [x] `~/.codex/prompts/subagent.md` существует
-     - [ ] Codex видит `/prompts:subagent` (ТРЕБУЕТ ПЕРЕЗАПУСКА CODEX)
-     - [ ] Sub-Agent запускается
+4. [DONE] Ручное тестирование
+   - ✅ Структура директорий создаётся
+   - ✅ `~/.codex/prompts/subagent.md` работает
+   - ✅ Codex видит `/prompts:subagent`
+   - ✅ Sub-Agent создал `hello.txt` (сессия `019aee0b-5811-7ba0-8ae7-59761f09830a`)
 
 ---
 
 ## Phase 2 — Развитие (Будущее)
 
 ### Stream 2.1: Интерактивное создание Sub-Agent'ов
-
 - [TODO] Скрипт запрашивает имя, description, инструкции
-- [TODO] Валидация имени (без спецсимволов)
-- [TODO] Генерация шаблона инструкций
 
 ### Stream 2.2: Мониторинг и логирование
-
-- [TODO] Парсинг session_id из JSONL-вывода
-- [TODO] Логирование сессий Sub-Agent'ов
+- [TODO] Парсинг session_id из JSONL
+- [TODO] Логирование сессий

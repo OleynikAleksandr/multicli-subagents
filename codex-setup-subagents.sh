@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # codex-setup-subagents.sh
-# Creates Sub-Agent infrastructure for Codex CLI in the current workspace
+# Creates Sub-Agent infrastructure for Codex CLI
 #
 # Usage: ./codex-setup-subagents.sh
 #
@@ -12,31 +12,36 @@ set -e
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}=== Codex Sub-Agent Setup ===${NC}"
 echo ""
 
-# Get workspace root (current directory)
+# Paths
+CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
+PROMPTS_DIR="${CODEX_HOME}/prompts"
 WORKSPACE_ROOT="$(pwd)"
-CODEX_DIR="${WORKSPACE_ROOT}/.codex"
-PROMPTS_DIR="${CODEX_DIR}/prompts"
-SUBAGENTS_DIR="${CODEX_DIR}/subagents"
+SUBAGENTS_DIR="${WORKSPACE_ROOT}/.codex/subagents"
 
-# Create directories
-echo -e "${YELLOW}[1/3] Creating directories...${NC}"
+# Step 1: Create global prompts directory
+echo -e "${YELLOW}[1/3] Setting up global prompts directory...${NC}"
 mkdir -p "${PROMPTS_DIR}"
-mkdir -p "${SUBAGENTS_DIR}"
 echo "  ✓ ${PROMPTS_DIR}"
-echo "  ✓ ${SUBAGENTS_DIR}"
 
-# Create /subagent slash-command
+# Step 2: Create /prompts:subagent command (if not exists)
 echo ""
-echo -e "${YELLOW}[2/3] Creating /subagent slash-command...${NC}"
-cat > "${PROMPTS_DIR}/subagent.md" << 'PROMPT_EOF'
+echo -e "${YELLOW}[2/3] Creating /prompts:subagent slash-command...${NC}"
+
+PROMPT_FILE="${PROMPTS_DIR}/subagent.md"
+if [ -f "${PROMPT_FILE}" ]; then
+    echo -e "  ${BLUE}ℹ Already exists: ${PROMPT_FILE}${NC}"
+    echo "  Skipping (remove manually to recreate)"
+else
+    cat > "${PROMPT_FILE}" << 'PROMPT_EOF'
 ---
 description: Run a Sub-Agent to execute a task in background
-argument-hint: <agent-name> <task-description>
+argument-hint: AGENT=<name> TASK=<description>
 ---
 
 # Sub-Agent Launch Instructions
@@ -44,26 +49,26 @@ argument-hint: <agent-name> <task-description>
 You are the Main Agent. The user wants to delegate a task to a Sub-Agent.
 
 ## Parameters
-- **Agent Name:** $1
-- **Task Description:** $ARGUMENTS (everything after agent name)
+- **Agent Name:** $AGENT
+- **Task Description:** $TASK
 
 ## Your Actions
 
 ### Step 1: Verify Sub-Agent exists
-Check if the file `.codex/subagents/$1/$1.md` exists.
+Check if the file `.codex/subagents/$AGENT/$AGENT.md` exists in current workspace.
 If it does NOT exist, inform the user:
-> Sub-Agent "$1" not found. Create it first:
-> `.codex/subagents/$1/$1.md`
+> Sub-Agent "$AGENT" not found. Create it first:
+> `.codex/subagents/$AGENT/$AGENT.md`
 
 ### Step 2: Launch Sub-Agent
-Execute this bash command (substitute $1 and $ARGUMENTS with actual values):
+Execute this bash command:
 
 ```bash
 codex exec \
   --full-auto \
   --add-dir "$(pwd)" \
   -C "$(pwd)" \
-  "First, read the file .codex/subagents/<AGENT_NAME>/<AGENT_NAME>.md for your instructions. Then execute the following task: <TASK_DESCRIPTION>"
+  "First, read the file .codex/subagents/$AGENT/$AGENT.md for your instructions. Then execute the following task: $TASK"
 ```
 
 ### Step 3: Save Session ID
@@ -80,17 +85,18 @@ codex exec resume <SESSION_ID> "<your answer to Sub-Agent questions>"
 
 ## Important Notes
 - Sub-Agent has FULL access to workspace via `--add-dir`
-- Sub-Agent reads ONLY its specific instructions from `<agent-name>.md`
+- Sub-Agent reads ONLY its specific instructions from `$AGENT.md`
 - `--full-auto` enables automatic command approval
 - You handle all Sub-Agent questions autonomously
 PROMPT_EOF
+    echo -e "  ${GREEN}✓ Created: ${PROMPT_FILE}${NC}"
+fi
 
-echo "  ✓ ${PROMPTS_DIR}/subagent.md"
-
-# Create example Sub-Agent
+# Step 3: Create local subagents directory with example
 echo ""
-echo -e "${YELLOW}[3/3] Creating example Sub-Agent...${NC}"
+echo -e "${YELLOW}[3/3] Creating local Sub-Agents directory...${NC}"
 mkdir -p "${SUBAGENTS_DIR}/example"
+
 cat > "${SUBAGENTS_DIR}/example/example.md" << 'EXAMPLE_EOF'
 # Example Sub-Agent Instructions
 
@@ -123,17 +129,24 @@ echo ""
 echo -e "${GREEN}=== Setup Complete! ===${NC}"
 echo ""
 echo "Structure created:"
-echo "  .codex/"
-echo "  ├── prompts/"
-echo "  │   └── subagent.md      (slash-command)"
-echo "  └── subagents/"
-echo "      └── example/"
-echo "          └── example.md   (example agent)"
+echo ""
+echo "  GLOBAL: ${CODEX_HOME}/"
+echo "  └── prompts/"
+echo "      └── subagent.md      (slash-command)"
+echo ""
+echo "  LOCAL: ${WORKSPACE_ROOT}/"
+echo "  └── .codex/"
+echo "      └── subagents/"
+echo "          └── example/"
+echo "              └── example.md   (example agent)"
+echo ""
+echo -e "${RED}⚠ IMPORTANT: Restart Codex CLI for the command to appear!${NC}"
 echo ""
 echo -e "${BLUE}Usage:${NC}"
-echo "  1. Start Codex CLI: codex"
-echo "  2. Use command: /subagent example \"Your task here\""
+echo '  1. Start Codex CLI: codex'
+echo '  2. Type / and look for "prompts:subagent"'
+echo '  3. Use: /prompts:subagent AGENT=example TASK="Your task here"'
 echo ""
 echo "To create more Sub-Agents:"
-echo "  mkdir -p .codex/subagents/<name>"
-echo "  # Create .codex/subagents/<name>/<name>.md with instructions"
+echo '  mkdir -p .codex/subagents/<name>'
+echo '  # Create .codex/subagents/<name>/<name>.md with instructions'

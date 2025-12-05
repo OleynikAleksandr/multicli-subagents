@@ -88,7 +88,8 @@ codex exec resume <SESSION_ID> "<your answer to Sub-Agent questions>"
 - Sub-Agent has FULL access to workspace via `--add-dir`
 - Sub-Agent reads ONLY its specific instructions from `$AGENT.md`
 - `--full-auto` enables automatic command approval
-- `--skip-git-repo-check` allows running outside trusted git directories
+- `--skip-git-repo-check` is for initial `codex exec` only, NOT for `resume`
+- For `resume`: ensure workspace has git repo (run `git init` if needed)
 - You handle all Sub-Agent questions autonomously
 PROMPT_EOF
     echo -e "  ${GREEN}✓ Created: ${PROMPT_FILE}${NC}"

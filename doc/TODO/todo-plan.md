@@ -1,34 +1,35 @@
 # План разработки (Development TODO Plan)
 
-## Правила выполнения (Execution Rules):
-- Каждая подзадача — не более 3 файлов.
-- **Gates**: после подзадачи — Git Commit.
+---
+
+## Phase 1 — MVP: Базовая инфраструктура — DONE ✅ (2025-12-05)
+
+- [DONE] Скрипт `codex-setup-subagents.sh`
+- [DONE] Slash-команда `/prompts:subagent`
+- [DONE] Тестирование двухходовочки (resume)
 
 ---
 
-## Phase 1 — MVP: Базовая инфраструктура Sub-Agent (updated: 2025-12-05)
+## Phase 2 — Auto-Routing — DONE ✅ (2025-12-05)
 
-### Stream 1.1: Создание скрипта — DONE ✅
-
-1. [DONE] Базовый скрипт — `5b2ab8a`
-2. [DONE] Исправить путь для slash-команды — `db8d05d`
-3. [DONE] Добавить --skip-git-repo-check — `7bc1c3f`
-
-### Stream 1.2: Верификация — DONE ✅
-
-4. [DONE] Ручное тестирование
-   - ✅ Структура директорий создаётся
-   - ✅ `~/.codex/prompts/subagent.md` работает
-   - ✅ Codex видит `/prompts:subagent`
-   - ✅ Sub-Agent создал `hello.txt` (сессия `019aee0b-5811-7ba0-8ae7-59761f09830a`)
+- [DONE] `manifest.json` с триггерами — `6cbab10`
+- [DONE] Sub-Agent `translator`
+- [DONE] `AGENTS.md` с правилами авто-маршрутизации
+- [DONE] Тестирование: "перевод на английский - 01.md" → автоматическая делегация!
 
 ---
 
-## Phase 2 — Развитие (Будущее)
+## Phase 3 — Развитие (Будущее)
 
-### Stream 2.1: Интерактивное создание Sub-Agent'ов
-- [TODO] Скрипт запрашивает имя, description, инструкции
+### Stream 3.1: Интерактивное создание Sub-Agent'ов
+- [TODO] Скрипт запрашивает имя, description, триггеры
+- [TODO] Добавление в manifest.json
 
-### Stream 2.2: Мониторинг и логирование
+### Stream 3.2: Мониторинг
 - [TODO] Парсинг session_id из JSONL
 - [TODO] Логирование сессий
+
+### Stream 3.3: Дополнительные Sub-Agent'ы
+- [TODO] code-reviewer
+- [TODO] test-runner
+- [TODO] docs-generator

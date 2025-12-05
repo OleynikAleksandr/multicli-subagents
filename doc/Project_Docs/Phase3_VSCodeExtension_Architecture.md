@@ -74,20 +74,48 @@ subagent-manager/
 └── exports/                      # Для sharing
 ```
 
-### metadata.json
+### Формат `.subagent` файла (для export/import/sharing)
+
 ```json
 {
-  "id": "translator",
-  "name": "Translator",
-  "description": "Translates files between languages",
-  "author": "Oleksandr",
-  "version": "1.0.0",
-  "triggers": ["translate", "переведи", "перевод"],
+  "version": "1.0",
+  "metadata": {
+    "id": "translator",
+    "name": "Translator",
+    "description": "Translates files between languages",
+    "author": "Oleksandr Oliinyk",
+    "version": "1.0.0",
+    "createdAt": "2025-12-05",
+    "tags": ["translation", "i18n", "localization"]
+  },
+  "triggers": [
+    "translate", "переведи", "перевод", "translation",
+    "to english", "to russian", "на английский", "на русский"
+  ],
+  "instructions": "# Translator Sub-Agent\n\nYou are a Translation Sub-Agent...",
   "supportedAgents": ["codex", "claude", "gemini"],
-  "createdAt": "2025-12-05",
-  "tags": ["translation", "i18n"]
+  "agentConfigs": {
+    "codex": {
+      "promptFormat": "markdown",
+      "frontmatter": {
+        "description": "Run translation task",
+        "argument-hint": "AGENT=translator TASK=<description>"
+      }
+    },
+    "claude": {
+      "promptFormat": "markdown"
+    },
+    "gemini": {
+      "promptFormat": "toml"
+    }
+  }
 }
 ```
+
+**Workflow:**
+- **Export:** Library → `.subagent` файл → GitHub/Gist
+- **Import:** `.subagent` файл → Library
+- **Deploy:** Library → конвертация в формат CLI (md/toml) → целевая директория
 
 ---
 

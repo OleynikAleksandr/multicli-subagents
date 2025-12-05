@@ -30,10 +30,10 @@
 **Архитектура:** `doc/Project_Docs/VSCode_Extension_Architecture.md`
 
 ### Stream 3.1: Project Scaffolding
-1. [TODO] Инициализация VS Code Extension (Yeoman или вручную)
+1. [TODO] Инициализация VS Code Extension вручную
    - Файлы: `package.json`, `tsconfig.json`, `src/extension.ts`
    - Commit: `feat: init vscode extension`
-2. [TODO] Настройка Webview React (Vite)
+2. [TODO] Настройка Webview React 
    - Файлы: `webview-ui/package.json`, `webview-ui/vite.config.ts`, `webview-ui/src/App.tsx`
    - Commit: `feat: add webview react app`
 3. [TODO] WebviewProvider + коммуникация Extension ↔ Webview

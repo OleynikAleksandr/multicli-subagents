@@ -1,6 +1,6 @@
-# Session 001 — Sub-Agent Infrastructure
+# Session 001 — Sub-Agent System MVP + Architecture
 
-**Date:** 2025-12-05 10:07 - 12:00 (Europe/Berlin)
+**Date:** 2025-12-05 10:07 - 14:30 (Europe/Berlin)
 **Branch:** main
 
 ---
@@ -9,29 +9,46 @@
 
 ## Phase 1: MVP ✅
 - Скрипт `codex-setup-subagents.sh`
-- Slash-команда `/prompts:subagent` в `~/.codex/prompts/`
-- Флаг `--skip-git-repo-check` для `codex exec`
-- Тестирование: Sub-Agent + resume работают
+- Slash-команда `/prompts:subagent`
+- Тестирование: простой таск + двухходовочка (resume)
 
 ## Phase 2: Auto-Routing ✅
-- `manifest.json` с триггерами для автоматической маршрутизации
-- Sub-Agent `translator` с триггерами на перевод
-- `AGENTS.md` с правилами авто-маршрутизации
-- **Успешный тест:** запрос "перевод на английский - 01.md" автоматически делегирован в translator!
+- `manifest.json` с триггерами
+- Sub-Agent `translator`
+- `AGENTS.md` с правилами маршрутизации
+- Успешный тест: "перевод" → автоматическая делегация
 
-## Git commits
+## Phase 3: Архитектура ✅
+- Исследование CLI-агентов (Codex, Claude, Gemini, Kimi)
+- Проектирование VS Code Extension
+- Формат `.subagent` для sharing
+- Объединённый архитектурный документ
+
+## Документация ✅
+- `doc/Project_Docs/SubAgent_System_Architecture.md` — единая архитектура
+- `doc/Knowledge/CLI_Agents_Research.md` — результаты исследований
+
+## Git Commits
 - `031c13b` init: project structure
 - `5b2ab8a` feat: add codex-setup-subagents.sh
-- `db8d05d` fix: move slash-command to global ~/.codex/prompts/
-- `7bc1c3f` fix: add --skip-git-repo-check flag
-- `ba11d3a` docs: clarify resume limitations
-- `6cbab10` feat: add manifest.json auto-routing and translator
+- `db8d05d` fix: global prompts path
+- `7bc1c3f` fix: skip-git-repo-check
+- `ba11d3a` docs: resume limitations
+- `6cbab10` feat: manifest auto-routing
+- `7cb964b` docs: Phase 2 complete
+- `13c249a` docs: Phase 3 architecture
+- `7c64dbc` docs: .subagent format
+- `...` docs: reorganization (pending)
 
 ---
 
 # 2. Next Session
 
+## Required Documents
+1. `doc/Project_Docs/SubAgent_System_Architecture.md`
+2. `doc/Knowledge/CLI_Agents_Research.md`
+
 ## Plans
-- Phase 3: Интерактивное создание Sub-Agent'ов
-- Phase 3: Мониторинг session_id
-- Дополнительные Sub-Agent'ы (code-reviewer, test-runner)
+1. Создать `doc/TODO/todo-plan.md` для Phase 3 (VS Code Extension)
+2. Практическая проверка Gemini CLI `--resume -p`
+3. Начать реализацию VS Code Extension

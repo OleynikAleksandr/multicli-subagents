@@ -1,7 +1,8 @@
-# Session 001 — Sub-Agent System MVP + Architecture
+# Session 001 — multicli-agents MVP + Architecture
 
-**Date:** 2025-12-05 10:07 - 14:30 (Europe/Berlin)
+**Date:** 2025-12-05 10:07 - 14:55 (Europe/Berlin)
 **Branch:** main
+**Project:** multicli-agents (renamed from CodexSubAgets)
 
 ---
 
@@ -22,15 +23,15 @@
 - Исследование CLI-агентов (Codex, Claude, Gemini, Kimi)
 - Проектирование VS Code Extension
 - Формат `.subagent` для sharing
-- Объединённый архитектурный документ
 
 ## Документация ✅
-- `doc/Project_Docs/SubAgent_System_Architecture.md` — единая архитектура
-- `doc/Knowledge/CLI_Agents_Research.md` — результаты исследований
+- Объединённый архитектурный документ
+- Knowledge база с исследованиями
+- README.md для проекта
 
-## Git Commits
+## Git Commits (11)
 - `031c13b` init: project structure
-- `5b2ab8a` feat: add codex-setup-subagents.sh
+- `5b2ab8a` feat: codex-setup-subagents.sh
 - `db8d05d` fix: global prompts path
 - `7bc1c3f` fix: skip-git-repo-check
 - `ba11d3a` docs: resume limitations
@@ -38,7 +39,8 @@
 - `7cb964b` docs: Phase 2 complete
 - `13c249a` docs: Phase 3 architecture
 - `7c64dbc` docs: .subagent format
-- `...` docs: reorganization (pending)
+- `57b6800` docs: reorganization
+- `f3942e1` chore: rename to multicli-agents
 
 ---
 
@@ -49,6 +51,6 @@
 2. `doc/Knowledge/CLI_Agents_Research.md`
 
 ## Plans
-1. Создать `doc/TODO/todo-plan.md` для Phase 3 (VS Code Extension)
-2. Практическая проверка Gemini CLI `--resume -p`
-3. Начать реализацию VS Code Extension
+1. Создать `todo-plan.md` для Phase 3 (VS Code Extension)
+2. Начать реализацию Extension (Codex + Claude adapters)
+3. Опубликовать на GitHub

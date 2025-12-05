@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "description": "Sub-Agent manifest for automatic task routing",
+  "agents": [
+    {
+      "name": "translator",
+      "triggers": ["translate", "переведи", "перевод", "translation", "to english", "to russian", "на английский", "на русский"],
+      "description": "Translates text, files, or documentation between languages"
+    }
+  ]
+}

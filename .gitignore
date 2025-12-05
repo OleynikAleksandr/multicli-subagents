@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+
+# Logs
+/tmp/
+*.log
+
+# IDE
+.vscode/
+.idea/

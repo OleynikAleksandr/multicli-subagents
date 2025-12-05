@@ -1,8 +1,7 @@
 # Session 001 — Sub-Agent Infrastructure MVP
 
-**Date:** 2025-12-05 10:07 - 11:30 (Europe/Berlin)
+**Date:** 2025-12-05 10:07 - 11:42 (Europe/Berlin)
 **Branch:** main
-**Version:** 1.0.0-MVP
 
 ---
 
@@ -11,29 +10,39 @@
 ## Work summary
 - Исследовал Codex CLI: `codex exec`, `codex exec resume`, custom slash-commands
 - Создал архитектурный документ `SubAgent_Architecture.md`
-- Создал скрипт `codex-setup-subagents.sh`:
-  - Глобальная slash-команда `~/.codex/prompts/subagent.md`
-  - Локальные Sub-Agent'ы в `.codex/subagents/`
+- Создал скрипт `codex-setup-subagents.sh`
 - Исправил путь для slash-команд (глобально в `~/.codex/prompts/`)
-- Добавил `--skip-git-repo-check` для работы вне доверенных директорий
-- Успешное тестирование: Sub-Agent создал файл `hello.txt`
+- Добавил `--skip-git-repo-check` для `codex exec`
+- Документировал что `codex exec resume` НЕ поддерживает `--skip-git-repo-check`
+
+## Тестирование — УСПЕХ ✅
+
+**Тест 1:** Simple task
+- `/prompts:subagent AGENT=example TASK="Create hello.txt"`
+- Sub-Agent создал файл
+
+**Тест 2:** Two-step interaction (двухходовочка)
+- `/prompts:subagent AGENT=example TASK="Create a file with user preferences"`
+- Sub-Agent создал `user-preferences.json` и задал уточняющий вопрос
+- Основной Агент **автономно** ответил через `codex exec resume`
+- Session ID: `019aee18-9dc4-7a12-b088-1f871210df4e`
 
 ## Git commits
-- `031c13b` init: project structure with architecture and todo-plan
-- `5b2ab8a` feat: add codex-setup-subagents.sh with /subagent command and example agent
-- `db8d05d` fix: move slash-command to global ~/.codex/prompts/ per Codex CLI docs
-- `7bc1c3f` fix: add --skip-git-repo-check flag for running outside trusted directories
+- `031c13b` init: project structure
+- `5b2ab8a` feat: add codex-setup-subagents.sh
+- `db8d05d` fix: move slash-command to global ~/.codex/prompts/
+- `7bc1c3f` fix: add --skip-git-repo-check flag
+- `474296c` docs: add Session001 report
+- `ba11d3a` docs: clarify resume limitations
 
 ---
 
 # 2. Instructions for Next Session
 
-## Required documents to review
+## Required documents
 1. `doc/Project_Docs/SubAgent_Architecture.md`
 2. `doc/TODO/todo-plan.md`
-3. `doc/Sessions/Session001.md` (THIS REPORT)
 
-## Plans for next session
-- Phase 2: Интерактивное создание Sub-Agent'ов (имя, description, инструкции)
-- Phase 2: Парсинг session_id для мониторинга
-- Возможное развитие: dashboard для отслеживания Sub-Agent сессий
+## Plans for next session (Phase 2)
+- Интерактивное создание Sub-Agent'ов (скрипт спрашивает имя, description)
+- Парсинг session_id из JSONL для мониторинга

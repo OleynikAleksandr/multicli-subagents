@@ -12,20 +12,17 @@
 
 ### Stream 1.1: Создание скрипта `codex-setup-subagents.sh`
 
-1. [TODO] **Создать базовый скрипт**
+1. [DONE] **Создать базовый скрипт** — `031c13b`
    - Файлы: `codex-setup-subagents.sh`
    - Задача: Скрипт создаёт директории `.codex/prompts/` и `.codex/subagents/`
-   - Commit: `feat: add codex-setup-subagents.sh scaffold`
 
-2. [TODO] **Добавить создание slash-команды `/subagent`**
+2. [DONE] **Добавить создание slash-команды `/subagent`**
    - Файлы: `codex-setup-subagents.sh`
    - Задача: Скрипт создаёт `.codex/prompts/subagent.md` с полной инструкцией
-   - Commit: `feat: add /subagent slash-command creation`
 
-3. [TODO] **Добавить пример Sub-Agent'а**
+3. [DONE] **Добавить пример Sub-Agent'а**
    - Файлы: `codex-setup-subagents.sh`
    - Задача: Скрипт создаёт `.codex/subagents/example/example.md` с примером инструкций
-   - Commit: `feat: add example sub-agent template`
 
 ---
 
@@ -34,10 +31,9 @@
 4. [TODO] **Ручное тестирование**
    - Задача: Протестировать скрипт в тестовом воркспейсе
    - Проверки:
-     - Структура директорий создаётся корректно
-     - Codex видит команду `/subagent`
-     - Sub-Agent запускается через `codex exec`
-   - Commit: `docs: add verification results to walkthrough`
+     - Структура директорий создаётся корректно ✅
+     - Codex видит команду `/subagent` — ТРЕБУЕТ ПРОВЕРКИ ПОЛЬЗОВАТЕЛЕМ
+     - Sub-Agent запускается через `codex exec` — ТРЕБУЕТ ПРОВЕРКИ ПОЛЬЗОВАТЕЛЕМ
 
 ---
 

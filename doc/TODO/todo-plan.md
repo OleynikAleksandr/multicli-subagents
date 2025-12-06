@@ -99,15 +99,15 @@
     - Commit: `feat: export/import agents` (013d3d3)
 
 ### Stream 3.8: Unit Tests
-19. [TODO] Тесты LibraryService
-    - Файлы: `src/test/LibraryService.test.ts`
-    - Commit: `test: library service`
-20. [TODO] Тесты Providers
-    - Файлы: `src/test/CodexProvider.test.ts`, `src/test/ClaudeProvider.test.ts`
-    - Commit: `test: providers`
-21. [TODO] Тесты SubAgentService
-    - Файлы: `src/test/SubAgentService.test.ts`
-    - Commit: `test: subagent service`
+19. [DONE] Тесты LibraryService
+    - Файлы: `src/test/suite/library-service.test.ts`
+    - Commit: `feat: implement offline unit testing infrastructure and tests` (47806a3)
+20. [DONE] Тесты Providers
+    - Файлы: `src/test/suite/providers.test.ts`
+    - Commit: `feat: implement offline unit testing infrastructure and tests` (47806a3)
+21. [DONE] Тесты SubAgentService
+    - Файлы: `src/test/suite/sub-agent-service.test.ts`
+    - Commit: `feat: implement offline unit testing infrastructure and tests` (47806a3)
 
 ### Stream 3.9: Integration & Documentation
 22. [TODO] Integration testing (F5 → Extension Host)

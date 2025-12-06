@@ -33,9 +33,9 @@
 1. [DONE] Инициализация VS Code Extension вручную
    - Файлы: `package.json`, `tsconfig.json`, `src/extension.ts`
    - Commit: `feat: init vscode extension` (7d53180)
-2. [TODO] Настройка Webview React 
+34. [DONE] Настройка Webview React 
    - Файлы: `webview-ui/package.json`, `webview-ui/vite.config.ts`, `webview-ui/src/App.tsx`
-   - Commit: `feat: add webview react app`
+   - Commit: `feat: add webview react app` (31385c7)
 3. [TODO] WebviewProvider + коммуникация Extension ↔ Webview
    - Файлы: `src/webview/WebviewProvider.ts`, `webview-ui/src/api/vscode.ts`
    - Commit: `feat: webview provider with message passing`

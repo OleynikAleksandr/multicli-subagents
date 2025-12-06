@@ -5,6 +5,16 @@
 /tmp/
 *.log
 
+# Dependencies
+node_modules/
+
+# Build
+out/
+dist/
+
 # IDE
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
 .idea/

@@ -21,3 +21,6 @@ dist/
 
 # Testing
 .vscode-test/
+
+# Releases
+*.vsix

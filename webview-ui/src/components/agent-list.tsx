@@ -83,7 +83,7 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
         onClick={() => vscode.postMessage({ command: "agent.import" })}
         type="button"
       >
-        📥 Import .subagent file
+        Import .subagent file
       </button>
 
       {/* Empty state */}
@@ -119,28 +119,28 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
               onClick={() => onEdit(agent)}
               type="button"
             >
-              ✏️ Edit
+              Edit
             </button>
             <button
               className="btn-success"
               onClick={() => setDeployTarget({ agent, target: null })}
               type="button"
             >
-              🚀 Deploy
+              Deploy
             </button>
             <button
               className="btn-secondary"
               onClick={() => handleExport(agent)}
               type="button"
             >
-              📤 Export
+              Export
             </button>
             <button
               className="btn-danger"
               onClick={() => setDeleteConfirm(agent)}
               type="button"
             >
-              🗑️ Delete
+              Delete
             </button>
           </div>
         </div>

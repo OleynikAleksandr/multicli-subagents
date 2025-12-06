@@ -25,14 +25,14 @@ export const HomeScreen = ({
         onClick={onCreateClick}
         type="button"
       >
-        ➕ Create New
+        + Create New
       </button>
       <button
         className="btn-secondary btn-large"
         onClick={onBrowseClick}
         type="button"
       >
-        📋 Browse
+        Browse
       </button>
     </div>
   </div>

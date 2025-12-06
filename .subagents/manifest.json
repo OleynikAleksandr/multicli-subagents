@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "agents": [
+    {
+      "name": "Демо",
+      "description": "Демо Саб агент, для демонстрации функционала",
+      "commands": {
+        "start": "cd \"$CWD\" && claude -p \"First, read .subagents/Демо/Демо.md. Then: $TASK\" --dangerously-skip-permissions",
+        "resume": "cd \"$CWD\" && claude --continue \"$ANSWER\" --dangerously-skip-permissions"
+      }
+    }
+  ]
+}

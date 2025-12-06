@@ -7,7 +7,8 @@ allowed-tools: Bash, Read
 
 $ARGUMENTS
 
-1. Read `.subagents/manifest.json`
+1. Read `.subagents/manifest.json` (or `~/.subagents/manifest.json` for global agents)
 2. Find agent matching the task
-3. Execute `commands.start`
-4. Handle follow-ups with `commands.resume`
+3. Read the instructions from `instructionsPath` field
+4. Execute `commands.start`
+5. Handle follow-ups with `commands.resume`

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "agents": [
+    {
+      "name": "Демо",
+      "description": "Демо Саб агент, для демонстрации функционала",
+      "commands": {
+        "start": "cd \"/Users/oleksandroliinyk/VSCODE/multicli-agents/.subagents/Демо\" && claude -p \"First, read Демо.md. Then: $TASK\" --dangerously-skip-permissions",
+        "resume": "cd \"/Users/oleksandroliinyk/VSCODE/multicli-agents/.subagents/Демо\" && claude --continue \"$ANSWER\" --dangerously-skip-permissions"
+      }
+    }
+  ]
+}

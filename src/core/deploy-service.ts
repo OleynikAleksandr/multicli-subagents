@@ -13,7 +13,6 @@ type ManifestFile = {
   agents: {
     name: string;
     description: string;
-    instructionsPath: string;
     commands: { start: string; resume: string };
   }[];
 };
@@ -81,9 +80,9 @@ export class DeployService {
     // 2. Write instructions file
     await writeFile(agentFile, agent.instructions, "utf-8");
 
-    // 3. Update manifest.json with full path to instructions
+    // 3. Update manifest.json - resolves $AGENT_DIR to actual path
     const manifest = await this._loadOrCreateManifest(manifestFile);
-    this._upsertAgentInManifest(manifest, agent, agentFile);
+    this._upsertAgentInManifest(manifest, agent, agentDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
     // 4. Create slash commands
@@ -112,9 +111,9 @@ export class DeployService {
     // 2. Write instructions file
     await writeFile(agentFile, agent.instructions, "utf-8");
 
-    // 3. Update manifest.json with full path to instructions
+    // 3. Update manifest.json - resolves $AGENT_DIR to actual path
     const manifest = await this._loadOrCreateManifest(manifestFile);
-    this._upsertAgentInManifest(manifest, agent, agentFile);
+    this._upsertAgentInManifest(manifest, agent, agentDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
     // 4. Create global slash commands for both CLIs
@@ -137,22 +136,28 @@ export class DeployService {
   }
 
   /**
-   * Update or add agent in manifest with full instructions path
+   * Update or add agent in manifest
+   * Replaces $AGENT_DIR placeholder with actual path in commands
    */
   private _upsertAgentInManifest(
     manifest: ManifestFile,
     agent: SubAgent,
-    instructionsPath: string
+    agentDir: string
   ): void {
     const existingIndex = manifest.agents.findIndex(
       (a) => a.name === agent.name
     );
 
+    // Replace $AGENT_DIR placeholder with actual path
+    const resolvedCommands = {
+      start: agent.commands.start.replace(/\$AGENT_DIR/g, agentDir),
+      resume: agent.commands.resume.replace(/\$AGENT_DIR/g, agentDir),
+    };
+
     const agentEntry = {
       name: agent.name,
       description: agent.description,
-      instructionsPath,
-      commands: agent.commands,
+      commands: resolvedCommands,
     };
 
     if (existingIndex !== -1) {

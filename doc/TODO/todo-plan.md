@@ -55,16 +55,16 @@
    - Файлы: `src/core/SubAgentService.ts`
    - Commit: `feat: subagent service facade`
 
-### Stream 3.3: CLI Providers
-7. [TODO] IAgentProvider интерфейс
-   - Файлы: `src/providers/IAgentProvider.ts`
-   - Commit: `feat: agent provider interface`
-8. [TODO] CodexProvider — адаптер для Codex CLI
-   - Файлы: `src/providers/CodexProvider.ts`
-   - Commit: `feat: codex provider`
-9. [TODO] ClaudeProvider — адаптер для Claude Code CLI
-   - Файлы: `src/providers/ClaudeProvider.ts`
-   - Commit: `feat: claude provider`
+### Stream 3.3: Providers Integration
+7. [DONE] CodexProvider (adapter)
+   - Файлы: `src/providers/codex-provider.ts`
+   - Commit: `feat: codex provider adapter` (c1c1621)
+8. [DONE] ClaudeProvider (adapter)
+   - Файлы: `src/providers/claude-provider.ts`
+   - Commit: `feat: claude provider adapter` (ad0c0c3)
+9. [DONE] Регистрация провайдеров
+   - Файлы: extension.ts
+   - Commit: `feat: register providers in extension activation` (415341e)
 
 ### Stream 3.4: Webview UI — Agent List
 10. [TODO] AgentList компонент

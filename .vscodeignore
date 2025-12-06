@@ -1,26 +1,31 @@
+*
+!package.json
+!README.md
+!LICENSE
+!LICENSE.md
+!LICENSE.txt
+!/out/**
+!/resources/**
+!/webview-ui/dist/**
 
-# Exclude from VSIX
+# Exclude source maps if we want smaller build, but usually good for debugging. 
+# Re-enable if user complains about size.
+# !/**/*.map
+
+# Explicitly exclude specific dev/test files that might be caught in included dirs
+src/
+doc/
+scripts/
+.agent/
+.codex/
+.husky/
+.github/
 .vscode-test/
 .vscode/
-.git/
+node_modules/
 .gitignore
 .jscpd.json
-.DS_Store
-*.log
-src/test/
-src/**/*.map
-webview-ui/
-node_modules/
-codex-setup-subagents.sh
-scripts/
-doc/
+.vscodeignore
 tsconfig.json
 vite.config.ts
-webview-ui/vite.config.ts
-*.tsbuildinfo
-package-lock.json
-
-# Explicitly include (overriding if necessary, though .vscodeignore is purely exclusion)
-# Note: vsce includes 'package.json', 'README.md', 'LICENSE' by default.
-# It uses .npmignore logic, but we want to be safe.
-# We MUST ensure 'out/' is NOT excluded here.
+webview-ui/

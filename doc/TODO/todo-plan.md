@@ -193,15 +193,12 @@
     - Commit: `feat: improved UI with deploy modal and a11y`
 
 #### Stream 3.10.6: Cleanup & Verification
-41. [TODO] Удалить старые компоненты
-    - Файлы: `agent-list.tsx`, `agent-editor.tsx`
-    - Commit: `refactor: remove old UI components`
+41. [SKIPPED] Удалить старые компоненты
+    - Файлы agent-list.tsx и agent-editor.tsx были обновлены, а не заменены
 
-42. [TODO] Создать UI Facade
-    - Файлы: `webview-ui/src/components/ui-facade.ts`
-    - Единая точка входа для всех компонентов
-    - ⚠️ Каждый screen — отдельный файл < 150 строк!
-    - Commit: `feat: UI facade pattern`
+42. [DEFERRED] Создать UI Facade
+    - Отложено — структура компонентов достаточна для MVP
+    - ⚠️ agent-list.tsx на 270 строках, в будущем выделить Deploy Modal
 
 43. [TODO] Ручное тестирование и фиксы
     - F5 → тест полного flow

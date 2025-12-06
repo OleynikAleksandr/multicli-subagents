@@ -89,7 +89,7 @@ export class ExportImportService {
     }
   }
 
-  private _isSubAgentFile(data: any): data is SubAgentFile {
+  private _isSubAgentFile(data: unknown): data is SubAgentFile {
     return (
       typeof data === "object" &&
       data !== null &&

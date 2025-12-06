@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+// biome-ignore lint/performance/noNamespaceImport: VS Code API requires namespace import
 import * as vscode from "vscode";
 import type { SubAgent } from "../models/sub-agent";
 

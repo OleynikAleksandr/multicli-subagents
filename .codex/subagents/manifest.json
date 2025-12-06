@@ -4,16 +4,12 @@
   "agents": [
     {
       "name": "Demo",
-      "triggers": [
-        "Demo"
-      ],
+      "triggers": ["Demo"],
       "description": "Это Demo"
     },
     {
       "name": "Demo2",
-      "triggers": [
-        "Demo2"
-      ],
+      "triggers": ["Demo2"],
       "description": "Demo2"
     }
   ]

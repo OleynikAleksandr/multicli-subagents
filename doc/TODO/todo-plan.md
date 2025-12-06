@@ -71,15 +71,16 @@
     - Commit: `feat: backend support for agent listing` (d2c6743)
 
 ### Stream 3.5: Webview UI — Agent Editor
-12. [TODO] AgentEditor компонент (форма)
-    - Файлы: `webview-ui/src/components/AgentEditor.tsx`, CSS
-    - Commit: `feat: agent editor form`
-13. [TODO] TriggerManager — управление триггерами
-    - Файлы: `webview-ui/src/components/TriggerManager.tsx`
-    - Commit: `feat: trigger manager`
-14. [TODO] Markdown редактор для инструкций
-    - Файлы: `webview-ui/src/components/InstructionsEditor.tsx`
-    - Commit: `feat: markdown instructions editor`
+12. [DONE] AgentEditor компонент (форма)
+    - Файлы: `webview-ui/src/components/agent-editor.tsx`, CSS
+    - Integration: Triggers and Instructions fields included (Simplified MVP)
+    - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
+13. [DONE] TriggerManager — управление триггерами
+    - Implemented as comma-separated input in AgentEditor
+    - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
+14. [DONE] Markdown редактор для инструкций
+    - Implemented as textarea in AgentEditor
+    - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
 
 ### Stream 3.6: Deploy Service
 15. [TODO] DeployService — deploy в проект/глобально

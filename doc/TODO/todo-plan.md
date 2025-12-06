@@ -110,12 +110,20 @@
     - Commit: `feat: implement offline unit testing infrastructure and tests` (47806a3)
 
 ### Stream 3.9: Integration & Documentation
-22. [TODO] Integration testing (F5 → Extension Host)
+22. [DONE] Integration testing (F5 → Extension Host)
     - Верификация: создать агента → deploy → проверить файлы
-    - Commit: `test: integration`
-23. [TODO] Обновить README.md и документацию
+    - Commit: `feat: v0.0.4 - release` (Manual verification passed)
+23. [DONE] Обновить README.md и документацию
     - Файлы: `README.md`, `doc/Project_Docs/VSCode_Extension_Architecture.md`
-    - Commit: `docs: extension usage`
+    - Commit: `docs: update README and Architecture for v0.0.1 release`
+
+### Stream 3.10: UI/UX Refactoring & Quality Polish
+24. [TODO] Design Review (CSS/Components)
+    - Goal: "Wow" design, responsiveness, consistency.
+25. [TODO] Functionality Gaps
+    - Address user complaints (list TBD).
+26. [TODO] Code Quality
+    - Refactor `agent-editor.tsx`.
 
 ---
 

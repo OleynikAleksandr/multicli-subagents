@@ -13,6 +13,24 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "multicli-agents-container",
+          "title": "SubAgents",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "multicli-agents-container": [
+        {
+          "type": "webview",
+          "id": "multicli-agents.webview",
+          "name": "SubAgent Manager"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "multicli-agents.open",

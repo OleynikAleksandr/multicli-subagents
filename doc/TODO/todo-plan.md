@@ -132,19 +132,19 @@
     - Commit: `feat: update SubAgent model with vendor and commands`
 
 #### Stream 3.10.2: Deploy Service Refactor
-29. [TODO] Изменить папку деплоя на `.subagents/`
+29. [DONE] Изменить папку деплоя на `.subagents/`
     - Файлы: `src/core/deploy-service.ts`
     - Изменения: `.codex/subagents/` → `.subagents/`
-    - Commit: `refactor: change deploy folder to .subagents`
+    - Commit: `refactor: deploy service with unified .subagents folder`
 
-30. [TODO] Добавить Global deploy `~/.subagents/`
+30. [DONE] Добавить Global deploy `~/.subagents/`
     - Файлы: `src/core/deploy-service.ts`
-    - Commit: `feat: add global deploy to ~/.subagents`
+    - Commit: `refactor: deploy service with unified .subagents folder`
 
-31. [TODO] Создание slash-команд для Main Agents
+31. [DONE] Создание slash-команд для Main Agents
     - Файлы: `src/core/deploy-service.ts`
     - Создать: `.codex/prompts/call-subagent.md`, `.claude/commands/call-subagent.md`
-    - Commit: `feat: generate slash commands for Main Agents`
+    - Commit: `refactor: deploy service with unified .subagents folder`
 
 #### Stream 3.10.3: UI Foundation
 32. [TODO] Создать тёмную тему и base CSS

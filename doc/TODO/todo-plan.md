@@ -41,11 +41,15 @@
    - Commit: `feat: webview provider with message passing` (dc6aee3)
 
 ### Stream 3.2: Core Models & Services
-4. [TODO] SubAgent модель и типы
-   - Файлы: `src/models/SubAgent.ts`, `src/models/types.ts`
-   - Commit: `feat: subagent model`
-5. [TODO] LibraryService — CRUD для локальной библиотеки
-   - Файлы: `src/core/LibraryService.ts`
+4. [DONE] SubAgent модель и типы
+   - Файлы: `src/models/sub-agent.ts`, `src/models/types.ts`
+   - Commit: `feat: subagent model and types` (1a43caa)
+5. [DONE] LibraryService (хранение)
+   - Файлы: `src/core/library-service.ts`
+   - Commit: `feat: library service for agent storage` (2f2f4fc)
+6. [DONE] SubAgentService (Facade)
+   - Файлы: `src/core/sub-agent-service.ts`
+   - Commit: `feat: subagent service facade` (ebbff1c)
    - Commit: `feat: library service`
 6. [TODO] SubAgentService — фасад для работы с агентами
    - Файлы: `src/core/SubAgentService.ts`

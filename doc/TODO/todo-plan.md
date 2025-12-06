@@ -36,9 +36,9 @@
 2. [DONE] Настройка Webview React 
    - Файлы: `webview-ui/package.json`, `webview-ui/vite.config.ts`, `webview-ui/src/App.tsx`
    - Commit: `feat: add webview react app` (31385c7)
-3. [TODO] WebviewProvider + коммуникация Extension ↔ Webview
-   - Файлы: `src/webview/WebviewProvider.ts`, `webview-ui/src/api/vscode.ts`
-   - Commit: `feat: webview provider with message passing`
+4. [DONE] WebviewProvider + коммуникация Extension ↔ Webview
+   - Файлы: `src/webview/webview-provider.ts`, `webview-ui/src/api/vscode.ts`
+   - Commit: `feat: webview provider with message passing` (dc6aee3)
 
 ### Stream 3.2: Core Models & Services
 4. [TODO] SubAgent модель и типы

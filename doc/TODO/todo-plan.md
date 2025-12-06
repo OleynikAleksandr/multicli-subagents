@@ -199,9 +199,11 @@
     - Файлы: `agent-list.tsx`, `agent-editor.tsx`
     - Commit: `refactor: remove old UI components`
 
-42. [TODO] Обновить тесты
-    - Файлы: `src/test/suite/*.test.ts`
-    - Commit: `test: update tests for new model`
+42. [TODO] Создать UI Facade
+    - Файлы: `webview-ui/src/components/ui-facade.ts`
+    - Единая точка входа для всех компонентов
+    - ⚠️ Каждый screen — отдельный файл < 150 строк!
+    - Commit: `feat: UI facade pattern`
 
 43. [TODO] Ручное тестирование и фиксы
     - F5 → тест полного flow

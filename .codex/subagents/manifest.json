@@ -3,18 +3,18 @@
   "description": "Sub-Agent manifest for automatic task routing",
   "agents": [
     {
-      "name": "translator",
+      "name": "Demo",
       "triggers": [
-        "translate",
-        "переведи",
-        "перевод",
-        "translation",
-        "to english",
-        "to russian",
-        "на английский",
-        "на русский"
+        "Demo"
       ],
-      "description": "Translates text, files, or documentation between languages"
+      "description": "Это Demo"
+    },
+    {
+      "name": "Demo2",
+      "triggers": [
+        "Demo2"
+      ],
+      "description": "Demo2"
     }
   ]
 }

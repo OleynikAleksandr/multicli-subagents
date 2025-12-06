@@ -117,13 +117,95 @@
     - Файлы: `README.md`, `doc/Project_Docs/VSCode_Extension_Architecture.md`
     - Commit: `docs: update README and Architecture for v0.0.1 release`
 
-### Stream 3.10: UI/UX Refactoring & Quality Polish
-24. [TODO] Design Review (CSS/Components)
-    - Goal: "Wow" design, responsiveness, consistency.
-25. [TODO] Functionality Gaps
-    - Address user complaints (list TBD).
-26. [TODO] Code Quality
-    - Refactor `agent-editor.tsx`.
+### Stream 3.10: SubAgent Architecture Refactoring
+
+**Архитектура:** `doc/Project_Docs/SubAgent_Refactoring_Architecture.md`
+
+#### Stream 3.10.1: Model Update
+27. [TODO] Обновить модель SubAgent
+    - Файлы: `src/models/sub-agent.ts`
+    - Изменения: убрать `triggers[]`, добавить `commands.start/resume`
+    - Commit: `feat: update SubAgent model with commands`
+
+28. [TODO] Обновить типы
+    - Файлы: `src/models/types.ts`
+    - Commit: `feat: update SubAgent types`
+
+#### Stream 3.10.2: Deploy Service Refactor
+29. [TODO] Изменить папку деплоя на `.subagents/`
+    - Файлы: `src/core/deploy-service.ts`
+    - Изменения: `.codex/subagents/` → `.subagents/`
+    - Commit: `refactor: change deploy folder to .subagents`
+
+30. [TODO] Добавить Global deploy `~/.subagents/`
+    - Файлы: `src/core/deploy-service.ts`
+    - Commit: `feat: add global deploy to ~/.subagents`
+
+31. [TODO] Создание slash-команд для Main Agents
+    - Файлы: `src/core/deploy-service.ts`
+    - Создать: `.codex/prompts/call-subagent.md`, `.claude/commands/call-subagent.md`
+    - Commit: `feat: generate slash commands for Main Agents`
+
+#### Stream 3.10.3: UI Foundation
+32. [TODO] Создать тёмную тему и base CSS
+    - Файлы: `webview-ui/src/index.css`
+    - Изменения: VS Code dark theme colors, большие inputs
+    - Commit: `style: dark theme and large inputs`
+
+33. [TODO] Создать Home Screen
+    - Файлы: `webview-ui/src/components/home-screen.tsx`
+    - Изменения: две кнопки Create/Browse
+    - Commit: `feat: home screen component`
+
+34. [TODO] Обновить App.tsx с роутингом
+    - Файлы: `webview-ui/src/App.tsx`
+    - Изменения: state-based routing между screens
+    - Commit: `feat: screen routing in App`
+
+#### Stream 3.10.4: Create Screen
+35. [TODO] Создать Create Screen (форма)
+    - Файлы: `webview-ui/src/components/create-screen.tsx`
+    - Поля: Name, Description, Sub Agent Vendor
+    - Commit: `feat: create screen form`
+
+36. [TODO] Инструкции через temp файл
+    - Файлы: `src/commands/open-temp-instructions.ts`, `webview-provider.ts`
+    - Workflow: открытие temp файла, слежение за закрытием
+    - Commit: `feat: temp file workflow for instructions`
+
+37. [TODO] Генерация commands в UI
+    - Файлы: `create-screen.tsx`
+    - Показывать start/resume read-only
+    - Commit: `feat: show generated commands`
+
+#### Stream 3.10.5: Browse Screen
+38. [TODO] Создать Browse Screen (список)
+    - Файлы: `webview-ui/src/components/browse-screen.tsx`
+    - Карточки агентов с действиями
+    - Commit: `feat: browse screen with agent cards`
+
+39. [TODO] Deploy Modal
+    - Файлы: `webview-ui/src/components/deploy-modal.tsx`
+    - Выбор: Project / Global
+    - Commit: `feat: deploy modal with target selection`
+
+40. [TODO] Подключить Edit/Export/Delete/Import
+    - Файлы: `browse-screen.tsx`
+    - Интеграция с существующими сервисами
+    - Commit: `feat: connect browse actions`
+
+#### Stream 3.10.6: Cleanup & Verification
+41. [TODO] Удалить старые компоненты
+    - Файлы: `agent-list.tsx`, `agent-editor.tsx`
+    - Commit: `refactor: remove old UI components`
+
+42. [TODO] Обновить тесты
+    - Файлы: `src/test/suite/*.test.ts`
+    - Commit: `test: update tests for new model`
+
+43. [TODO] Ручное тестирование и фиксы
+    - F5 → тест полного flow
+    - Commit: `fix: UI polish after testing`
 
 ---
 
@@ -158,6 +240,13 @@ npx ultracite check
 ### Ручное тестирование
 1. **F5** в VS Code → Extension Development Host
 2. Cmd+Shift+P → "SubAgent Manager: Open"
-3. Создать агента "test-agent"
-4. Deploy в проект → проверить `.codex/subagents/test-agent/`
-5. Export → Import → проверить целостность
+3. Проверить Home Screen: две кнопки Create/Browse
+4. Создать агента "test-agent" с vendor Codex
+5. Deploy в проект → проверить:
+   - `.subagents/test-agent/test-agent.md` существует
+   - `.subagents/manifest.json` содержит агента с `commands`
+   - `.codex/prompts/call-subagent.md` создан
+   - `.claude/commands/call-subagent.md` создан
+6. Deploy в Global → проверить `~/.subagents/`
+7. Browse Screen: Edit/Export/Delete работают
+8. Import .subagent файл

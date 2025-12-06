@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "description": "Sub-Agent manifest template with examples for Codex and Claude Code CLI",
+  "agents": [
+    {
+      "name": "translator",
+      "description": "Translates text, files, or documentation between languages. Use when user asks to: translate, переведи, перевод, to english, to russian, на английский, на русский.",
+      "commands": {
+        "start": "cd \"$CWD\" && codex exec --skip-git-repo-check --full-auto \"First, read .subagents/translator/translator.md for your instructions. Then execute: $TASK\"",
+        "resume": "cd \"$CWD\" && codex exec resume $SESSION_ID \"$ANSWER\""
+      }
+    },
+    {
+      "name": "code-reviewer",
+      "description": "Reviews code for quality, finds bugs, suggests improvements. Use when user asks to: review, проверь код, code review, найди баги, check quality.",
+      "commands": {
+        "start": "cd \"$CWD\" && claude -p --dangerously-skip-permissions \"First, read .subagents/code-reviewer/code-reviewer.md for your instructions. Then execute: $TASK\"",
+        "resume": "cd \"$CWD\" && claude -p --dangerously-skip-permissions --continue \"$ANSWER\""
+      }
+    }
+  ]
+}

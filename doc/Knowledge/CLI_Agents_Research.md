@@ -65,12 +65,33 @@ gemini --resume 0 -p "by index"
 
 ---
 
-## 3. Claude Code CLI (Anthropic) 🔄 ЧАСТИЧНО
+## 3. Claude Code CLI (Anthropic) ✅ ПРОВЕРЕНО
 
 ### Custom Commands
 - **Глобальные:** `~/.claude/commands/*.md`
 - **Проектные:** `.claude/commands/*.md`
 - **Формат:** Markdown + frontmatter
+
+### Non-Interactive Mode
+```bash
+claude -p --dangerously-skip-permissions --add-dir "$(pwd)" "prompt"
+```
+
+**Ключевые флаги:**
+- `-p, --print` — non-interactive, вывод и выход
+- `--dangerously-skip-permissions` — bypass all permission checks
+- `--add-dir "$(pwd)"` — доступ к директориям
+- `--permission-mode bypassPermissions` — альтернатива dangerously-skip
+
+### Resume Session
+```bash
+claude -p --dangerously-skip-permissions --continue "follow-up prompt"
+claude -p --dangerously-skip-permissions --resume <SESSION_ID> "follow-up"
+```
+
+**Флаги resume:**
+- `-c, --continue` — продолжить последнюю сессию
+- `-r, --resume [SESSION_ID]` — продолжить конкретную сессию
 
 ### Custom API Endpoint
 ```bash
@@ -79,7 +100,7 @@ export ANTHROPIC_API_KEY=sk-...
 ```
 
 ### Статус
-- ❓ Нужна проверка exec/resume в non-interactive mode
+- ✅ Non-interactive mode проверен (2025-12-06)
 
 ---
 
@@ -125,8 +146,8 @@ model_provider = "moonshot"
 | Функция | Codex | Gemini | Claude | Kimi |
 |---------|-------|--------|--------|------|
 | Custom Commands | ✅ md | ✅ toml | ✅ md | ❌ |
-| Exec Non-Interactive | ✅ | ✅ | ❓ | ❌ |
-| Resume + Prompt | ✅ | ✅ | ❓ | ❌ |
+| Exec Non-Interactive | ✅ | ✅ | ✅ | ❌ |
+| Resume + Prompt | ✅ | ✅ | ✅ | ❌ |
 | Context Window | 128K | **1M** | 200K | 256K |
 | OpenAI-compatible | ✅ | — | — | ✅ |
 | MCP Support | ⚠️ buggy | ✅ | ✅ | ✅ |

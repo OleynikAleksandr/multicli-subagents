@@ -276,8 +276,8 @@ interface SubAgent {
 ### Автоматические тесты
 
 ```bash
-# Unit tests
-npm run test
+# Unit tests (Offline - Mocks VS Code API)
+npm run test:offline
 
 # Lint + Format
 npx ultracite check

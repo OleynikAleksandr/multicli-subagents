@@ -76,8 +76,7 @@ export class ExportImportService {
       // Regenerate ID to avoid collisions
       agent.id = randomUUID();
 
-      // Mark as imported in metadata
-      agent.metadata.tags = [...(agent.metadata.tags || []), "imported"];
+      // Update metadata for imported agent
       agent.metadata.updatedAt = new Date().toISOString();
 
       return agent;

@@ -59,22 +59,13 @@ export class SubAgentService {
       return { success: false, error: `Agent with ID ${agentId} not found` };
     }
 
-    // Find a compatible provider
-    // For MVP, we just pick the first supported provider that is registered
-    const supportedProviderIds = agent.supportedProviders;
-    let provider: IAgentProvider | undefined;
-
-    for (const providerId of supportedProviderIds) {
-      provider = this.getProvider(providerId);
-      if (provider) {
-        break;
-      }
-    }
+    // Get the provider for this agent's vendor
+    const provider = this.getProvider(agent.vendor);
 
     if (!provider) {
       return {
         success: false,
-        error: `No compatible and registered provider found for agent ${agent.name}. Supported: ${supportedProviderIds.join(", ")}`,
+        error: `Provider "${agent.vendor}" is not registered for agent ${agent.name}`,
       };
     }
 

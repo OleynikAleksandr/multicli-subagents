@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { vscode } from "../api/vscode";
-import type { AgentProviderId, SubAgent } from "../models/types";
+import type { SubAgent, SubAgentVendor } from "../models/types";
 
 type AgentEditorProps = {
   initialAgent?: SubAgent | null;
@@ -8,16 +8,24 @@ type AgentEditorProps = {
   onCancel: () => void;
 };
 
-const EMPTY_AGENT: Omit<
-  SubAgent,
-  "id" | "createdAt" | "updatedAt" | "metadata"
-> = {
-  name: "",
-  description: "",
-  triggers: [],
-  instructions: "",
-  supportedProviders: ["codex"], // Default
-  providerConfigs: {},
+/**
+ * Generate CLI commands based on agent name and vendor
+ */
+const generateCommands = (
+  name: string,
+  vendor: SubAgentVendor
+): { start: string; resume: string } => {
+  if (vendor === "codex") {
+    return {
+      start: `cd "$CWD" && codex exec --skip-git-repo-check --full-auto "First, read .subagents/${name}/${name}.md. Then: $TASK"`,
+      resume: `cd "$CWD" && codex exec resume $SESSION_ID "$ANSWER"`,
+    };
+  }
+  // claude
+  return {
+    start: `cd "$CWD" && claude -p "First, read .subagents/${name}/${name}.md. Then: $TASK" --dangerously-skip-permissions`,
+    resume: `cd "$CWD" && claude --continue "$ANSWER" --dangerously-skip-permissions`,
+  };
 };
 
 export const AgentEditor = ({
@@ -25,28 +33,29 @@ export const AgentEditor = ({
   onSave,
   onCancel,
 }: AgentEditorProps) => {
-  const [formData, setFormData] = useState<Partial<SubAgent>>(
-    initialAgent || { ...EMPTY_AGENT }
+  const [name, setName] = useState(initialAgent?.name || "");
+  const [description, setDescription] = useState(
+    initialAgent?.description || ""
+  );
+  const [vendor, setVendor] = useState<SubAgentVendor>(
+    initialAgent?.vendor || "codex"
+  );
+  const [instructions, setInstructions] = useState(
+    initialAgent?.instructions || ""
   );
 
-  const [triggersInput, setTriggersInput] = useState(
-    initialAgent?.triggers.join(", ") || ""
-  );
+  const commands = generateCommands(name, vendor);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Process triggers
-    const triggers = triggersInput
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
-
-    const agentPayload = {
-      ...formData,
-      triggers,
-      // Ensure required fields for new agents
-      id: initialAgent?.id || crypto.randomUUID(), // For now generate ID here or let backend do it. Backend is better but for MVP here is fine.
+    const agentPayload: SubAgent = {
+      id: initialAgent?.id || crypto.randomUUID(),
+      name,
+      description,
+      vendor,
+      instructions,
+      commands,
       metadata: initialAgent?.metadata || {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -58,9 +67,21 @@ export const AgentEditor = ({
       payload: agentPayload,
     });
 
-    // Optimistic update / close
     onSave();
   };
+
+  const buildPayload = (): SubAgent => ({
+    id: initialAgent?.id || crypto.randomUUID(),
+    name,
+    description,
+    vendor,
+    instructions,
+    commands,
+    metadata: initialAgent?.metadata || {
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  });
 
   return (
     <div className="agent-editor p-4">
@@ -76,10 +97,10 @@ export const AgentEditor = ({
           <input
             className="w-full rounded border border-gray-600 bg-transparent p-2"
             id="name"
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => setName(e.target.value)}
             required
             type="text"
-            value={formData.name || ""}
+            value={name}
           />
         </div>
 
@@ -88,31 +109,38 @@ export const AgentEditor = ({
             className="mb-1 block font-medium text-sm"
             htmlFor="description"
           >
-            Description
+            Description (include keywords for routing)
           </label>
           <input
             className="w-full rounded border border-gray-600 bg-transparent p-2"
             id="description"
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="e.g. Translates text. Use for: translate, переведи, перевод"
             type="text"
-            value={formData.description || ""}
+            value={description}
           />
         </div>
 
         <div>
-          <label className="mb-1 block font-medium text-sm" htmlFor="triggers">
-            Triggers (comma separated)
-          </label>
-          <input
-            className="w-full rounded border border-gray-600 bg-transparent p-2"
-            id="triggers"
-            onChange={(e) => setTriggersInput(e.target.value)}
-            placeholder="e.g. translate, fix-bug"
-            type="text"
-            value={triggersInput}
-          />
+          <span className="mb-1 block font-medium text-sm">
+            Sub Agent Vendor
+          </span>
+          <div className="flex gap-4">
+            {(["codex", "claude"] as SubAgentVendor[]).map((v) => (
+              <label className="flex items-center gap-2" key={v}>
+                <input
+                  checked={vendor === v}
+                  name="vendor"
+                  onChange={() => setVendor(v)}
+                  type="radio"
+                />
+                {v === "codex" ? "Codex CLI" : "Claude Code CLI"}
+              </label>
+            ))}
+          </div>
+          <p className="mt-1 text-xs opacity-60">
+            CLI that will execute this Sub Agent
+          </p>
         </div>
 
         <div>
@@ -125,38 +153,26 @@ export const AgentEditor = ({
           <textarea
             className="h-32 w-full rounded border border-gray-600 bg-transparent p-2 font-mono text-sm"
             id="instructions"
-            onChange={(e) =>
-              setFormData({ ...formData, instructions: e.target.value })
-            }
-            value={formData.instructions || ""}
+            onChange={(e) => setInstructions(e.target.value)}
+            value={instructions}
           />
         </div>
 
-        <div>
-          <span className="mb-1 block font-medium text-sm">
-            Supported Providers
-          </span>
-          <div className="flex gap-4">
-            {["codex", "claude"].map((provider) => (
-              <label className="flex items-center gap-2" key={provider}>
-                <input
-                  checked={formData.supportedProviders?.includes(
-                    provider as AgentProviderId
-                  )}
-                  onChange={(e) => {
-                    const current = formData.supportedProviders || [];
-                    const next = e.target.checked
-                      ? [...current, provider as AgentProviderId]
-                      : current.filter((p) => p !== provider);
-                    setFormData({ ...formData, supportedProviders: next });
-                  }}
-                  type="checkbox"
-                />
-                {provider}
-              </label>
-            ))}
+        {!!name && (
+          <div>
+            <span className="mb-1 block font-medium text-sm">
+              Generated Commands (read-only)
+            </span>
+            <div className="rounded border border-gray-700 bg-gray-900 p-2 font-mono text-xs">
+              <div className="mb-1">
+                <span className="text-green-400">start:</span> {commands.start}
+              </div>
+              <div>
+                <span className="text-blue-400">resume:</span> {commands.resume}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {!!initialAgent && (
           <div className="mt-4 border-gray-700 border-t pt-4">
@@ -167,18 +183,7 @@ export const AgentEditor = ({
                 onClick={() => {
                   vscode.postMessage({
                     command: "agent.deploy.project",
-                    payload: {
-                      ...formData,
-                      // Ensure full object
-                      triggers: (typeof triggersInput === "string"
-                        ? triggersInput.split(",")
-                        : []
-                      )
-                        .map((t) => t.trim())
-                        .filter(Boolean),
-                      id: initialAgent.id,
-                      metadata: initialAgent.metadata,
-                    },
+                    payload: buildPayload(),
                   });
                 }}
                 type="button"
@@ -190,17 +195,7 @@ export const AgentEditor = ({
                 onClick={() => {
                   vscode.postMessage({
                     command: "agent.deploy.global",
-                    payload: {
-                      ...formData,
-                      triggers: (typeof triggersInput === "string"
-                        ? triggersInput.split(",")
-                        : []
-                      )
-                        .map((t) => t.trim())
-                        .filter(Boolean),
-                      id: initialAgent.id,
-                      metadata: initialAgent.metadata,
-                    },
+                    payload: buildPayload(),
                   });
                 }}
                 type="button"
@@ -212,17 +207,7 @@ export const AgentEditor = ({
                 onClick={() => {
                   vscode.postMessage({
                     command: "agent.export",
-                    payload: {
-                      ...formData,
-                      triggers: (typeof triggersInput === "string"
-                        ? triggersInput.split(",")
-                        : []
-                      )
-                        .map((t) => t.trim())
-                        .filter(Boolean),
-                      id: initialAgent.id,
-                      metadata: initialAgent.metadata,
-                    },
+                    payload: buildPayload(),
                   });
                 }}
                 type="button"

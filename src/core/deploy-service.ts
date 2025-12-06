@@ -28,8 +28,13 @@ export class DeployService {
 
     // 3. Update manifest.json
     let manifest: {
-      agents: { name: string; triggers: string[]; description: string }[];
-    } = { agents: [] };
+      version: string;
+      agents: {
+        name: string;
+        description: string;
+        commands: { start: string; resume: string };
+      }[];
+    } = { version: "1.0", agents: [] };
 
     try {
       const manifestContent = await readFile(manifestFile, "utf-8");
@@ -44,8 +49,8 @@ export class DeployService {
     );
     const agentEntry = {
       name: agent.name,
-      triggers: agent.triggers,
       description: agent.description,
+      commands: agent.commands,
     };
 
     if (existingIndex !== -1) {

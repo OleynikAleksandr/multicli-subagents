@@ -122,14 +122,14 @@
 **Архитектура:** `doc/Project_Docs/SubAgent_Refactoring_Architecture.md`
 
 #### Stream 3.10.1: Model Update
-27. [TODO] Обновить модель SubAgent
+27. [DONE] Обновить модель SubAgent
     - Файлы: `src/models/sub-agent.ts`
-    - Изменения: убрать `triggers[]`, добавить `commands.start/resume`
-    - Commit: `feat: update SubAgent model with commands`
+    - Изменения: убрать `triggers[]`, добавить `commands.start/resume`, добавить `vendor`
+    - Commit: `feat: update SubAgent model with vendor and commands`
 
-28. [TODO] Обновить типы
-    - Файлы: `src/models/types.ts`
-    - Commit: `feat: update SubAgent types`
+28. [DONE] Обновить типы и зависимости
+    - Файлы: `sub-agent.ts`, `types.ts`, `deploy-service.ts`, `sub-agent-service.ts`, `export-import-service.ts`, webview компоненты
+    - Commit: `feat: update SubAgent model with vendor and commands`
 
 #### Stream 3.10.2: Deploy Service Refactor
 29. [TODO] Изменить папку деплоя на `.subagents/`

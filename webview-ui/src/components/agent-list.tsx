@@ -98,14 +98,9 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
             </button>
           </div>
           <div className="mt-2 flex gap-2 text-xs">
-            {agent.supportedProviders.map((p) => (
-              <span
-                className="rounded border border-blue-800 bg-blue-900/50 px-1 text-blue-200"
-                key={p}
-              >
-                {p}
-              </span>
-            ))}
+            <span className="rounded border border-blue-800 bg-blue-900/50 px-1 text-blue-200">
+              {agent.vendor}
+            </span>
           </div>
         </div>
       ))}

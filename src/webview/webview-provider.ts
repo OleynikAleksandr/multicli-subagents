@@ -1,6 +1,7 @@
 // biome-ignore lint/performance/noNamespaceImport: VS Code API
 import * as vscode from "vscode";
 import type { DeployService } from "../core/deploy-service";
+import type { ExportImportService } from "../core/export-import-service";
 import type { SubAgentService } from "../core/sub-agent-service";
 
 export class WebviewProvider implements vscode.WebviewViewProvider {
@@ -9,15 +10,18 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
   private readonly _extensionUri: vscode.Uri;
   private readonly _subAgentService: SubAgentService;
   private readonly _deployService: DeployService;
+  private readonly _exportImportService: ExportImportService;
 
   constructor(
     extensionUri: vscode.Uri,
     subAgentService: SubAgentService,
-    deployService: DeployService
+    deployService: DeployService,
+    exportImportService: ExportImportService
   ) {
     this._extensionUri = extensionUri;
     this._subAgentService = subAgentService;
     this._deployService = deployService;
+    this._exportImportService = exportImportService;
   }
 
   resolveWebviewView(
@@ -34,6 +38,7 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Switch statement is large but simple
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.command) {
         case "hello": {
@@ -115,6 +120,40 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
           } catch (e) {
             vscode.window.showErrorMessage(
               `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
+            );
+          }
+          break;
+        }
+        case "agent.export": {
+          try {
+            await this._exportImportService.exportAgent(data.payload);
+          } catch (e) {
+            vscode.window.showErrorMessage(
+              `Failed to export: ${e instanceof Error ? e.message : String(e)}`
+            );
+          }
+          break;
+        }
+        case "agent.import": {
+          try {
+            const agent = await this._exportImportService.importAgent();
+            if (agent) {
+              await this._subAgentService.createAgent(agent);
+              vscode.window.showInformationMessage(
+                `Agent "${agent.name}" imported!`
+              );
+              // Refresh
+              const agents = await this._subAgentService.getAgents();
+              if (this._view) {
+                this._view.webview.postMessage({
+                  command: "agent.list.result",
+                  payload: agents,
+                });
+              }
+            }
+          } catch (e) {
+            vscode.window.showErrorMessage(
+              `Failed to import: ${e instanceof Error ? e.message : String(e)}`
             );
           }
           break;

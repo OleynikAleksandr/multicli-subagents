@@ -2,6 +2,7 @@
 import * as vscode from "vscode";
 
 import { DeployService } from "./core/deploy-service";
+import { ExportImportService } from "./core/export-import-service";
 import { SubAgentService } from "./core/sub-agent-service";
 import { ClaudeProvider } from "./providers/claude-provider";
 import { CodexProvider } from "./providers/codex-provider";
@@ -13,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Initialize Core Services
   const subAgentService = new SubAgentService(context);
   const deployService = new DeployService();
+  const exportImportService = new ExportImportService();
 
   // Register Providers
   subAgentService.registerProvider(new CodexProvider());
@@ -22,7 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
   const provider = new WebviewProvider(
     context.extensionUri,
     subAgentService,
-    deployService
+    deployService,
+    exportImportService
   );
 
   context.subscriptions.push(

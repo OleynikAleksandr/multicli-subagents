@@ -46,6 +46,13 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
         >
           Create New Agent
         </button>
+        <button
+          className="mt-2 ml-2 rounded border border-gray-600 px-4 py-2 text-white hover:bg-white/10"
+          onClick={() => vscode.postMessage({ command: "agent.import" })}
+          type="button"
+        >
+          Import
+        </button>
       </div>
     );
   }
@@ -54,13 +61,22 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
     <div className="agent-list p-4">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-bold text-lg">Agents</h2>
-        <button
-          className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
-          onClick={onCreate}
-          type="button"
-        >
-          + New Agent
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="rounded border border-gray-600 px-3 py-1 text-sm text-white hover:bg-white/10"
+            onClick={() => vscode.postMessage({ command: "agent.import" })}
+            type="button"
+          >
+            Import
+          </button>
+          <button
+            className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+            onClick={onCreate}
+            type="button"
+          >
+            + New Agent
+          </button>
+        </div>
       </div>
 
       {agents.map((agent) => (

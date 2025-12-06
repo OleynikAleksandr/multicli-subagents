@@ -5,12 +5,6 @@ import * as vscode from "vscode";
 import type { SubAgent } from "../models/sub-agent";
 
 export class DeployService {
-  private readonly _context: vscode.ExtensionContext;
-
-  constructor(context: vscode.ExtensionContext) {
-    this._context = context;
-  }
-
   async deployToProject(agent: SubAgent): Promise<void> {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders || workspaceFolders.length === 0) {

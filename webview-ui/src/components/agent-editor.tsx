@@ -158,7 +158,7 @@ export const AgentEditor = ({
           </div>
         </div>
 
-        {initialAgent && (
+        {!!initialAgent && (
           <div className="mt-4 border-gray-700 border-t pt-4">
             <h3 className="mb-2 font-bold text-sm">Deployment</h3>
             <div className="flex gap-2">
@@ -206,6 +206,28 @@ export const AgentEditor = ({
                 type="button"
               >
                 Deploy Global
+              </button>
+              <button
+                className="rounded bg-gray-600 px-3 py-1 text-sm text-white hover:bg-gray-500"
+                onClick={() => {
+                  vscode.postMessage({
+                    command: "agent.export",
+                    payload: {
+                      ...formData,
+                      triggers: (typeof triggersInput === "string"
+                        ? triggersInput.split(",")
+                        : []
+                      )
+                        .map((t) => t.trim())
+                        .filter(Boolean),
+                      id: initialAgent.id,
+                      metadata: initialAgent.metadata,
+                    },
+                  });
+                }}
+                type="button"
+              >
+                Export
               </button>
             </div>
           </div>

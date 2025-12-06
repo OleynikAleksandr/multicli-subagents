@@ -43,6 +43,49 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
           }
           break;
         }
+        case "agent.create": {
+          await this._subAgentService.createAgent(data.payload);
+          vscode.window.showInformationMessage(
+            `Agent ${data.payload.name} created!`
+          );
+          // Trigger refresh
+          const agents = await this._subAgentService.getAgents();
+          if (this._view) {
+            this._view.webview.postMessage({
+              command: "agent.list.result",
+              payload: agents,
+            });
+          }
+          break;
+        }
+        case "agent.update": {
+          await this._subAgentService.updateAgent(data.payload);
+          vscode.window.showInformationMessage(
+            `Agent ${data.payload.name} updated!`
+          );
+          // Trigger refresh
+          const agents = await this._subAgentService.getAgents();
+          if (this._view) {
+            this._view.webview.postMessage({
+              command: "agent.list.result",
+              payload: agents,
+            });
+          }
+          break;
+        }
+        case "agent.delete": {
+          await this._subAgentService.deleteAgent(data.payload.id);
+          vscode.window.showInformationMessage("Agent deleted!");
+          // Trigger refresh
+          const agents = await this._subAgentService.getAgents();
+          if (this._view) {
+            this._view.webview.postMessage({
+              command: "agent.list.result",
+              payload: agents,
+            });
+          }
+          break;
+        }
         default:
           break;
       }

@@ -147,20 +147,20 @@
     - Commit: `refactor: deploy service with unified .subagents folder`
 
 #### Stream 3.10.3: UI Foundation
-32. [TODO] Создать тёмную тему и base CSS
+32. [DONE] Создать тёмную тему и base CSS
     - Файлы: `webview-ui/src/index.css`
-    - Изменения: VS Code dark theme colors, большие inputs
-    - Commit: `style: dark theme and large inputs`
+    - Изменения: VS Code dark theme colors, CSS переменные, utility-классы
+    - Commit: `style: dark theme UI foundation`
 
-33. [TODO] Создать Home Screen
+33. [DONE] Создать Home Screen
     - Файлы: `webview-ui/src/components/home-screen.tsx`
     - Изменения: две кнопки Create/Browse
-    - Commit: `feat: home screen component`
+    - Commit: `style: dark theme UI foundation`
 
-34. [TODO] Обновить App.tsx с роутингом
+34. [DONE] Обновить App.tsx с роутингом
     - Файлы: `webview-ui/src/App.tsx`
-    - Изменения: state-based routing между screens
-    - Commit: `feat: screen routing in App`
+    - Изменения: state-based routing между screens (home, create, browse, edit)
+    - Commit: `style: dark theme UI foundation`
 
 #### Stream 3.10.4: Create Screen
 35. [TODO] Создать Create Screen (форма)

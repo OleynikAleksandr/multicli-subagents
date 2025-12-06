@@ -1,49 +1,86 @@
 import { useState } from "react";
-// import { vscode } from "./api/vscode";
-import "./app.css";
 import { AgentEditor } from "./components/agent-editor";
 import { AgentList } from "./components/agent-list";
+import { HomeScreen } from "./components/home-screen";
 import type { SubAgent } from "./models/types";
 
+/**
+ * Screen types for routing
+ */
+type Screen = "home" | "create" | "browse" | "edit";
+
 function App() {
-  const [view, setView] = useState<"list" | "editor">("list");
+  const [screen, setScreen] = useState<Screen>("home");
   const [selectedAgent, setSelectedAgent] = useState<SubAgent | null>(null);
+
+  const goHome = () => {
+    setScreen("home");
+    setSelectedAgent(null);
+  };
 
   const handleCreate = () => {
     setSelectedAgent(null);
-    setView("editor");
+    setScreen("create");
+  };
+
+  const handleBrowse = () => {
+    setScreen("browse");
   };
 
   const handleEdit = (agent: SubAgent) => {
     setSelectedAgent(agent);
-    setView("editor");
+    setScreen("edit");
   };
 
   const handleSave = () => {
-    setView("list");
-    setSelectedAgent(null);
-  };
-
-  const handleCancel = () => {
-    setView("list");
+    setScreen("browse");
     setSelectedAgent(null);
   };
 
   return (
-    <div className="App">
-      <h1>SubAgent Manager</h1>
-      <main>
-        {view === "list" ? (
+    <>
+      {screen === "home" && (
+        <HomeScreen onBrowseClick={handleBrowse} onCreateClick={handleCreate} />
+      )}
+
+      {screen === "browse" && (
+        <div className="container">
+          <div className="header">
+            <button
+              className="btn-secondary back-button"
+              onClick={goHome}
+              type="button"
+            >
+              ← Back
+            </button>
+            <h2>Browse SubAgents</h2>
+          </div>
           <AgentList onCreate={handleCreate} onEdit={handleEdit} />
-        ) : (
+        </div>
+      )}
+
+      {(screen === "create" || screen === "edit") && (
+        <div className="container">
+          <div className="header">
+            <button
+              className="btn-secondary back-button"
+              onClick={goHome}
+              type="button"
+            >
+              ← Back
+            </button>
+            <h2>
+              {screen === "create" ? "Create New SubAgent" : "Edit SubAgent"}
+            </h2>
+          </div>
           <AgentEditor
             initialAgent={selectedAgent}
-            onCancel={handleCancel}
+            onCancel={goHome}
             onSave={handleSave}
           />
-        )}
-      </main>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 

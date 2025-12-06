@@ -1,13 +1,16 @@
 // biome-ignore lint/performance/noNamespaceImport: VS Code API
 import * as vscode from "vscode";
+import type { SubAgentService } from "../core/sub-agent-service";
 
 export class WebviewProvider implements vscode.WebviewViewProvider {
   static readonly viewType = "multicli-agents.webview";
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
+  private readonly _subAgentService: SubAgentService;
 
-  constructor(extensionUri: vscode.Uri) {
+  constructor(extensionUri: vscode.Uri, subAgentService: SubAgentService) {
     this._extensionUri = extensionUri;
+    this._subAgentService = subAgentService;
   }
 
   resolveWebviewView(
@@ -24,13 +27,19 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    webviewView.webview.onDidReceiveMessage((data) => {
+    webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.command) {
         case "hello": {
           vscode.window.showInformationMessage(data.payload.text);
-          // Just to use _view and suppress unused warning for MVP
+          break;
+        }
+        case "agent.list": {
+          const agents = await this._subAgentService.getAgents();
           if (this._view) {
-            console.log("Webview is active");
+            this._view.webview.postMessage({
+              command: "agent.list.result",
+              payload: agents,
+            });
           }
           break;
         }

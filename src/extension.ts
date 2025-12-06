@@ -17,8 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   subAgentService.registerProvider(new ClaudeProvider());
 
   // Initialize UI
-  const provider = new WebviewProvider(context.extensionUri);
-  // Note: We'll need to pass subAgentService to WebviewProvider later for handling messages
+  const provider = new WebviewProvider(context.extensionUri, subAgentService);
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(

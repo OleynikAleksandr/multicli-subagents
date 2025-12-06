@@ -36,7 +36,7 @@
 2. [DONE] Настройка Webview React 
    - Файлы: `webview-ui/package.json`, `webview-ui/vite.config.ts`, `webview-ui/src/App.tsx`
    - Commit: `feat: add webview react app` (31385c7)
-4. [DONE] WebviewProvider + коммуникация Extension ↔ Webview
+3. [DONE] WebviewProvider + коммуникация Extension ↔ Webview
    - Файлы: `src/webview/webview-provider.ts`, `webview-ui/src/api/vscode.ts`
    - Commit: `feat: webview provider with message passing` (dc6aee3)
 
@@ -50,10 +50,6 @@
 6. [DONE] SubAgentService (Facade)
    - Файлы: `src/core/sub-agent-service.ts`
    - Commit: `feat: subagent service facade` (ebbff1c)
-   - Commit: `feat: library service`
-6. [TODO] SubAgentService — фасад для работы с агентами
-   - Файлы: `src/core/SubAgentService.ts`
-   - Commit: `feat: subagent service facade`
 
 ### Stream 3.3: Providers Integration
 7. [DONE] CodexProvider (adapter)

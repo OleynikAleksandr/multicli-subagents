@@ -4,6 +4,10 @@
   "description": "Manage CLI Sub-Agents inside VS Code",
   "version": "0.0.1",
   "publisher": "OleksandrOliinyk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OleksandrOliinyk/multicli-agents.git"
+  },
   "icon": "resources/icon.png",
   "engines": {
     "vscode": "*"

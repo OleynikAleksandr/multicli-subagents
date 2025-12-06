@@ -1,0 +1,26 @@
+
+# Exclude from VSIX
+.vscode-test/
+.vscode/
+.git/
+.gitignore
+.jscpd.json
+.DS_Store
+*.log
+src/test/
+src/**/*.map
+webview-ui/
+node_modules/
+codex-setup-subagents.sh
+scripts/
+doc/
+tsconfig.json
+vite.config.ts
+webview-ui/vite.config.ts
+*.tsbuildinfo
+package-lock.json
+
+# Explicitly include (overriding if necessary, though .vscodeignore is purely exclusion)
+# Note: vsce includes 'package.json', 'README.md', 'LICENSE' by default.
+# It uses .npmignore logic, but we want to be safe.
+# We MUST ensure 'out/' is NOT excluded here.

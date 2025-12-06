@@ -1,6 +1,7 @@
 // biome-ignore lint/performance/noNamespaceImport: VS Code API
 import * as vscode from "vscode";
 
+import { DeployService } from "./core/deploy-service";
 import { SubAgentService } from "./core/sub-agent-service";
 import { ClaudeProvider } from "./providers/claude-provider";
 import { CodexProvider } from "./providers/codex-provider";
@@ -11,13 +12,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Initialize Core Services
   const subAgentService = new SubAgentService(context);
+  const deployService = new DeployService();
 
   // Register Providers
   subAgentService.registerProvider(new CodexProvider());
   subAgentService.registerProvider(new ClaudeProvider());
 
   // Initialize UI
-  const provider = new WebviewProvider(context.extensionUri, subAgentService);
+  const provider = new WebviewProvider(
+    context.extensionUri,
+    subAgentService,
+    deployService
+  );
 
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(

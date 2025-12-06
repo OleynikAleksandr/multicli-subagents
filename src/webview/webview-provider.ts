@@ -1,5 +1,6 @@
 // biome-ignore lint/performance/noNamespaceImport: VS Code API
 import * as vscode from "vscode";
+import type { DeployService } from "../core/deploy-service";
 import type { SubAgentService } from "../core/sub-agent-service";
 
 export class WebviewProvider implements vscode.WebviewViewProvider {
@@ -7,10 +8,16 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
   private readonly _subAgentService: SubAgentService;
+  private readonly _deployService: DeployService;
 
-  constructor(extensionUri: vscode.Uri, subAgentService: SubAgentService) {
+  constructor(
+    extensionUri: vscode.Uri,
+    subAgentService: SubAgentService,
+    deployService: DeployService
+  ) {
     this._extensionUri = extensionUri;
     this._subAgentService = subAgentService;
+    this._deployService = deployService;
   }
 
   resolveWebviewView(
@@ -83,6 +90,32 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
               command: "agent.list.result",
               payload: agents,
             });
+          }
+          break;
+        }
+        case "agent.deploy.project": {
+          try {
+            await this._deployService.deployToProject(data.payload);
+            vscode.window.showInformationMessage(
+              `Agent ${data.payload.name} deployed to Project!`
+            );
+          } catch (e) {
+            vscode.window.showErrorMessage(
+              `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
+            );
+          }
+          break;
+        }
+        case "agent.deploy.global": {
+          try {
+            await this._deployService.deployToGlobal(data.payload);
+            vscode.window.showInformationMessage(
+              `Agent ${data.payload.name} deployed Globally!`
+            );
+          } catch (e) {
+            vscode.window.showErrorMessage(
+              `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
+            );
           }
           break;
         }

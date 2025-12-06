@@ -158,7 +158,60 @@ export const AgentEditor = ({
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end gap-2">
+        {initialAgent && (
+          <div className="mt-4 border-gray-700 border-t pt-4">
+            <h3 className="mb-2 font-bold text-sm">Deployment</h3>
+            <div className="flex gap-2">
+              <button
+                className="rounded bg-green-700 px-3 py-1 text-sm text-white hover:bg-green-600"
+                onClick={() => {
+                  vscode.postMessage({
+                    command: "agent.deploy.project",
+                    payload: {
+                      ...formData,
+                      // Ensure full object
+                      triggers: (typeof triggersInput === "string"
+                        ? triggersInput.split(",")
+                        : []
+                      )
+                        .map((t) => t.trim())
+                        .filter(Boolean),
+                      id: initialAgent.id,
+                      metadata: initialAgent.metadata,
+                    },
+                  });
+                }}
+                type="button"
+              >
+                Deploy to Project
+              </button>
+              <button
+                className="rounded bg-purple-700 px-3 py-1 text-sm text-white hover:bg-purple-600"
+                onClick={() => {
+                  vscode.postMessage({
+                    command: "agent.deploy.global",
+                    payload: {
+                      ...formData,
+                      triggers: (typeof triggersInput === "string"
+                        ? triggersInput.split(",")
+                        : []
+                      )
+                        .map((t) => t.trim())
+                        .filter(Boolean),
+                      id: initialAgent.id,
+                      metadata: initialAgent.metadata,
+                    },
+                  });
+                }}
+                type="button"
+              >
+                Deploy Global
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-4 flex justify-end gap-2 border-gray-700 border-t pt-4">
           <button
             className="rounded border border-gray-600 px-4 py-2"
             onClick={onCancel}

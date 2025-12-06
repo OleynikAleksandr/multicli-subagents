@@ -83,12 +83,12 @@
     - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
 
 ### Stream 3.6: Deploy Service
-15. [TODO] DeployService — deploy в проект/глобально
-    - Файлы: `src/core/DeployService.ts`
-    - Commit: `feat: deploy service`
-16. [TODO] DeployDialog UI
-    - Файлы: `webview-ui/src/components/DeployDialog.tsx`
-    - Commit: `feat: deploy dialog`
+15. [DONE] DeployService — deploy в проект/глобально
+    - Файлы: `src/core/deploy-service.ts` (Implement project/global deploy)
+    - Commit: `fix: lint errors in deploy service` (3133a4a)
+16. [DONE] Deploy Buttons UI
+    - Implemented as buttons in AgentEditor
+    - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
 
 ### Stream 3.7: Export/Import
 17. [TODO] Export .subagent файл

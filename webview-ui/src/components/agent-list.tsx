@@ -7,12 +7,19 @@ type AgentListProps = {
   onEdit: (agent: SubAgent) => void;
 };
 
+/**
+ * Browse Screen - List of all agents with actions
+ */
 export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
   const [agents, setAgents] = useState<SubAgent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deployTarget, setDeployTarget] = useState<{
+    agent: SubAgent;
+    target: "project" | "global" | null;
+  } | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<SubAgent | null>(null);
 
   useEffect(() => {
-    // Handler for messages from extension
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message.command === "agent.list.result") {
@@ -22,8 +29,6 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
     };
 
     window.addEventListener("message", handleMessage);
-
-    // Initial fetch
     vscode.postMessage({ command: "agent.list" });
 
     return () => {
@@ -31,79 +36,235 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
     };
   }, []);
 
-  if (loading) {
-    return <div className="p-4">Loading agents...</div>;
-  }
+  const handleDeploy = (agent: SubAgent, target: "project" | "global") => {
+    vscode.postMessage({
+      command:
+        target === "project" ? "agent.deploy.project" : "agent.deploy.global",
+      payload: agent,
+    });
+    setDeployTarget(null);
+  };
 
-  if (agents.length === 0) {
-    return (
-      <div className="p-4 text-center">
-        <p>No agents found.</p>
-        <button
-          className="config-btn mt-2 rounded bg-blue-600 px-4 py-2 text-white"
-          onClick={onCreate}
-          type="button"
-        >
-          Create New Agent
-        </button>
-        <button
-          className="mt-2 ml-2 rounded border border-gray-600 px-4 py-2 text-white hover:bg-white/10"
-          onClick={() => vscode.postMessage({ command: "agent.import" })}
-          type="button"
-        >
-          Import
-        </button>
-      </div>
-    );
+  const handleExport = (agent: SubAgent) => {
+    vscode.postMessage({ command: "agent.export", payload: agent });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirm) {
+      vscode.postMessage({
+        command: "agent.delete",
+        payload: { id: deleteConfirm.id },
+      });
+      setAgents(agents.filter((a) => a.id !== deleteConfirm.id));
+      setDeleteConfirm(null);
+    }
+  };
+
+  const closeModal = () => {
+    setDeployTarget(null);
+    setDeleteConfirm(null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center text-muted">Loading agents...</div>;
   }
 
   return (
-    <div className="agent-list p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-bold text-lg">Agents</h2>
-        <div className="flex gap-2">
+    <div className="flex flex-col gap-md">
+      {/* Import button */}
+      <button
+        className="btn-secondary w-full"
+        onClick={() => vscode.postMessage({ command: "agent.import" })}
+        type="button"
+      >
+        📥 Import .subagent file
+      </button>
+
+      {/* Empty state */}
+      {agents.length === 0 && (
+        <div className="mt-md text-center text-muted">
+          <p>No agents in library yet.</p>
           <button
-            className="rounded border border-gray-600 px-3 py-1 text-sm text-white hover:bg-white/10"
-            onClick={() => vscode.postMessage({ command: "agent.import" })}
-            type="button"
-          >
-            Import
-          </button>
-          <button
-            className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+            className="btn-primary mt-md"
             onClick={onCreate}
             type="button"
           >
-            + New Agent
+            Create your first agent
           </button>
         </div>
-      </div>
+      )}
 
+      {/* Agent cards */}
       {agents.map((agent) => (
-        <div
-          className="agent-card mb-4 rounded border border-gray-700 bg-gray-800/50 p-3"
-          key={agent.id}
-        >
-          <div className="flex items-start justify-between">
+        <div className="card" key={agent.id}>
+          <div className="card-header">
             <div>
-              <h3 className="font-bold">{agent.name}</h3>
-              <p className="text-sm opacity-80">{agent.description}</p>
+              <div className="card-title">{agent.name}</div>
+              <div className="card-description">{agent.description}</div>
             </div>
-            <button
-              className="rounded border px-2 py-1 text-xs hover:bg-white/10"
-              onClick={() => onEdit(agent)}
-              type="button"
-            >
-              Edit
-            </button>
-          </div>
-          <div className="mt-2 flex gap-2 text-xs">
-            <span className="rounded border border-blue-800 bg-blue-900/50 px-1 text-blue-200">
+            <span className={`badge badge-${agent.vendor}`}>
               {agent.vendor}
             </span>
           </div>
+
+          <div className="card-actions">
+            <button
+              className="btn-secondary"
+              onClick={() => onEdit(agent)}
+              type="button"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              className="btn-success"
+              onClick={() => setDeployTarget({ agent, target: null })}
+              type="button"
+            >
+              🚀 Deploy
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => handleExport(agent)}
+              type="button"
+            >
+              📤 Export
+            </button>
+            <button
+              className="btn-danger"
+              onClick={() => setDeleteConfirm(agent)}
+              type="button"
+            >
+              🗑️ Delete
+            </button>
+          </div>
         </div>
       ))}
+
+      {/* Deploy Modal */}
+      {!!deployTarget && (
+        // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal overlay pattern
+        <div
+          aria-label="Deploy modal"
+          className="modal-overlay"
+          onClick={closeModal}
+          onKeyDown={handleKeyDown}
+          role="dialog"
+        >
+          {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal content container */}
+          <div
+            aria-label="Deploy options"
+            className="modal"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            role="document"
+          >
+            <h3 className="modal-title">Deploy "{deployTarget.agent.name}"</h3>
+
+            <div className="flex flex-col gap-md">
+              <label className="flex items-center gap-sm">
+                <input
+                  checked={deployTarget.target === "project"}
+                  name="deploy-target"
+                  onChange={() =>
+                    setDeployTarget({ ...deployTarget, target: "project" })
+                  }
+                  type="radio"
+                />
+                <div>
+                  <div>Project</div>
+                  <div className="form-hint">.subagents/ in workspace</div>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-sm">
+                <input
+                  checked={deployTarget.target === "global"}
+                  name="deploy-target"
+                  onChange={() =>
+                    setDeployTarget({ ...deployTarget, target: "global" })
+                  }
+                  type="radio"
+                />
+                <div>
+                  <div>Global</div>
+                  <div className="form-hint">
+                    ~/.subagents/ for all projects
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                className="btn-secondary"
+                onClick={closeModal}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-primary"
+                disabled={!deployTarget.target}
+                onClick={() => {
+                  if (deployTarget.target) {
+                    handleDeploy(deployTarget.agent, deployTarget.target);
+                  }
+                }}
+                type="button"
+              >
+                Deploy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {!!deleteConfirm && (
+        // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal overlay pattern
+        <div
+          aria-label="Delete confirmation"
+          className="modal-overlay"
+          onClick={closeModal}
+          onKeyDown={handleKeyDown}
+          role="dialog"
+        >
+          {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal content container */}
+          <div
+            aria-label="Confirm delete"
+            className="modal"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            role="document"
+          >
+            <h3 className="modal-title">Delete "{deleteConfirm.name}"?</h3>
+            <p className="text-muted">This action cannot be undone.</p>
+
+            <div className="modal-actions">
+              <button
+                className="btn-secondary"
+                onClick={closeModal}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-danger"
+                onClick={handleDeleteConfirm}
+                type="button"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

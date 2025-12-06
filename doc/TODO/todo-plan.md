@@ -163,36 +163,34 @@
     - Commit: `style: dark theme UI foundation`
 
 #### Stream 3.10.4: Create Screen
-35. [TODO] Создать Create Screen (форма)
-    - Файлы: `webview-ui/src/components/create-screen.tsx`
-    - Поля: Name, Description, Sub Agent Vendor
-    - Commit: `feat: create screen form`
+35. [DONE] Создать Create Screen (форма)
+    - Файлы: `webview-ui/src/components/agent-editor.tsx`
+    - Реализовано через agent-editor с новыми CSS классами
+    - Commit: `feat: improved UI with deploy modal and a11y`
 
-36. [TODO] Инструкции через temp файл
-    - Файлы: `src/commands/open-temp-instructions.ts`, `webview-provider.ts`
-    - Workflow: открытие temp файла, слежение за закрытием
-    - Commit: `feat: temp file workflow for instructions`
+36. [SKIPPED] Инструкции через temp файл
+    - Отложено на будущее — textarea работает для MVP
 
-37. [TODO] Генерация commands в UI
-    - Файлы: `create-screen.tsx`
-    - Показывать start/resume read-only
-    - Commit: `feat: show generated commands`
+37. [DONE] Генерация commands в UI
+    - Файлы: `agent-editor.tsx`
+    - Показывает start/resume read-only
+    - Commit: `feat: improved UI with deploy modal and a11y`
 
 #### Stream 3.10.5: Browse Screen
-38. [TODO] Создать Browse Screen (список)
-    - Файлы: `webview-ui/src/components/browse-screen.tsx`
+38. [DONE] Создать Browse Screen (список)
+    - Файлы: `webview-ui/src/components/agent-list.tsx`
     - Карточки агентов с действиями
-    - Commit: `feat: browse screen with agent cards`
+    - Commit: `feat: improved UI with deploy modal and a11y`
 
-39. [TODO] Deploy Modal
-    - Файлы: `webview-ui/src/components/deploy-modal.tsx`
+39. [DONE] Deploy Modal
+    - Файлы: `agent-list.tsx`
     - Выбор: Project / Global
-    - Commit: `feat: deploy modal with target selection`
+    - Commit: `feat: improved UI with deploy modal and a11y`
 
-40. [TODO] Подключить Edit/Export/Delete/Import
-    - Файлы: `browse-screen.tsx`
-    - Интеграция с существующими сервисами
-    - Commit: `feat: connect browse actions`
+40. [DONE] Подключить Edit/Export/Delete/Import
+    - Файлы: `agent-list.tsx`
+    - Delete Modal с подтверждением
+    - Commit: `feat: improved UI with deploy modal and a11y`
 
 #### Stream 3.10.6: Cleanup & Verification
 41. [TODO] Удалить старые компоненты

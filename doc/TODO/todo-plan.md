@@ -63,12 +63,12 @@
    - Commit: `feat: register providers in extension activation` (415341e)
 
 ### Stream 3.4: Webview UI — Agent List
-10. [TODO] AgentList компонент
-    - Файлы: `webview-ui/src/components/AgentList.tsx`, CSS
-    - Commit: `feat: agent list component`
-11. [TODO] Интеграция с LibraryService (fetch agents)
+10. [DONE] AgentList компонент
+    - Файлы: `webview-ui/src/components/agent-list.tsx`, CSS
+    - Commit: `feat: agent list component` (07c7f24)
+11. [DONE] Интеграция с LibraryService (fetch agents)
     - Файлы: `webview-ui/src/hooks/useAgents.ts`, `webview-ui/src/api/messages.ts`
-    - Commit: `feat: fetch agents from library`
+    - Commit: `feat: backend support for agent listing` (d2c6743)
 
 ### Stream 3.5: Webview UI — Agent Editor
 12. [TODO] AgentEditor компонент (форма)

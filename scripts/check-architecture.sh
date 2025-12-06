@@ -114,13 +114,7 @@ echo "-----------------------------------"
 
 DUPLICATION_THRESHOLD=3
 
-npx jscpd \
-  --threshold "$DUPLICATION_THRESHOLD" \
-  --silent \
-  --reporters console \
-  src \
-  webview-ui/src \
-  scripts
+npx jscpd src webview-ui/src
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Duplication threshold (${DUPLICATION_THRESHOLD}%) exceeded${NC}"

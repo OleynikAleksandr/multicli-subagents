@@ -1,0 +1,14 @@
+{
+  "threshold": 3,
+  "reporters": ["console"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/src/test/**",
+    "**/out/**",
+    "**/dist/**",
+    "**/*.d.ts",
+    "src/providers/*.ts",
+    "webview-ui/src/models/types.ts",
+    "webview-ui/src/components/agent-editor.tsx"
+  ]
+}

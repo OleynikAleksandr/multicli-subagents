@@ -91,12 +91,12 @@
     - Commit: `feat: complete UI flow for agent editing` (5bb96e2)
 
 ### Stream 3.7: Export/Import
-17. [TODO] Export .subagent файл
-    - Файлы: `src/core/ExportService.ts`
-    - Commit: `feat: export subagent`
-18. [TODO] Import .subagent файл
-    - Файлы: `src/core/ImportService.ts`, UI обновления
-    - Commit: `feat: import subagent`
+17. [DONE] Export .subagent файл
+    - Файлы: `src/core/export-import-service.ts`, UI update
+    - Commit: `feat: export/import agents` (013d3d3)
+18. [DONE] Import .subagent файл
+    - Файлы: `src/core/export-import-service.ts`, UI update
+    - Commit: `feat: export/import agents` (013d3d3)
 
 ### Stream 3.8: Unit Tests
 19. [TODO] Тесты LibraryService

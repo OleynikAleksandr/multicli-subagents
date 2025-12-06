@@ -4,7 +4,16 @@
   "agents": [
     {
       "name": "translator",
-      "triggers": ["translate", "переведи", "перевод", "translation", "to english", "to russian", "на английский", "на русский"],
+      "triggers": [
+        "translate",
+        "переведи",
+        "перевод",
+        "translation",
+        "to english",
+        "to russian",
+        "на английский",
+        "на русский"
+      ],
       "description": "Translates text, files, or documentation between languages"
     }
   ]

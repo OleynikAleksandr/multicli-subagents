@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { vscode } from "../api/vscode";
 import type { SubAgent } from "../models/types";
+import { DeleteModal } from "./delete-modal";
+import { DeployModal } from "./deploy-modal";
 
 type AgentListProps = {
   onCreate: () => void;
@@ -8,16 +10,17 @@ type AgentListProps = {
 };
 
 /**
- * Browse Screen - List of all agents with actions
+ * Browse Screen - List of all SubAgents with checkbox selection and toolbar
  */
 export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
   const [agents, setAgents] = useState<SubAgent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deployTarget, setDeployTarget] = useState<{
-    agent: SubAgent;
-    target: "project" | "global" | null;
-  } | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<SubAgent | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deployAgents, setDeployAgents] = useState<SubAgent[] | null>(null);
+  const [deployTarget, setDeployTarget] = useState<"project" | "global" | null>(
+    null
+  );
+  const [deleteAgents, setDeleteAgents] = useState<SubAgent[] | null>(null);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -36,43 +39,84 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
     };
   }, []);
 
-  const handleDeploy = (agent: SubAgent, target: "project" | "global") => {
-    vscode.postMessage({
-      command:
-        target === "project" ? "agent.deploy.project" : "agent.deploy.global",
-      payload: agent,
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
     });
-    setDeployTarget(null);
   };
 
-  const handleExport = (agent: SubAgent) => {
-    vscode.postMessage({ command: "agent.export", payload: agent });
+  const toggleSelectAll = () => {
+    if (selectedIds.size === agents.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(agents.map((a) => a.id)));
+    }
+  };
+
+  const getSelectedAgents = (): SubAgent[] =>
+    agents.filter((a) => selectedIds.has(a.id));
+
+  const handleDeploy = () => {
+    if (!(deployAgents && deployTarget)) {
+      return;
+    }
+    for (const agent of deployAgents) {
+      vscode.postMessage({
+        command:
+          deployTarget === "project"
+            ? "agent.deploy.project"
+            : "agent.deploy.global",
+        payload: agent,
+      });
+    }
+    setDeployAgents(null);
+    setDeployTarget(null);
+    setSelectedIds(new Set());
+  };
+
+  const handleExport = () => {
+    for (const agent of getSelectedAgents()) {
+      vscode.postMessage({ command: "agent.export", payload: agent });
+    }
+    setSelectedIds(new Set());
   };
 
   const handleDeleteConfirm = () => {
-    if (deleteConfirm) {
-      vscode.postMessage({
-        command: "agent.delete",
-        payload: { id: deleteConfirm.id },
-      });
-      setAgents(agents.filter((a) => a.id !== deleteConfirm.id));
-      setDeleteConfirm(null);
+    if (deleteAgents) {
+      for (const agent of deleteAgents) {
+        vscode.postMessage({
+          command: "agent.delete",
+          payload: { id: agent.id },
+        });
+      }
+      const deleteIds = new Set(deleteAgents.map((a) => a.id));
+      setAgents(agents.filter((a) => !deleteIds.has(a.id)));
+      setDeleteAgents(null);
+      setSelectedIds(new Set());
     }
   };
 
-  const closeModal = () => {
+  const closeDeployModal = () => {
+    setDeployAgents(null);
     setDeployTarget(null);
-    setDeleteConfirm(null);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      closeModal();
-    }
+  const closeDeleteModal = () => {
+    setDeleteAgents(null);
   };
+
+  // Toolbar button states
+  const hasSelection = selectedIds.size > 0;
+  const hasSingleSelection = selectedIds.size === 1;
 
   if (loading) {
-    return <div className="text-center text-muted">Loading agents...</div>;
+    return <div className="text-center text-muted">Loading SubAgents...</div>;
   }
 
   return (
@@ -89,181 +133,114 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
       {/* Empty state */}
       {agents.length === 0 && (
         <div className="mt-md text-center text-muted">
-          <p>No agents in library yet.</p>
+          <p>No SubAgents in library yet.</p>
           <button
             className="btn-primary mt-md"
             onClick={onCreate}
             type="button"
           >
-            Create your first agent
+            Create your first SubAgent
           </button>
         </div>
       )}
 
-      {/* Agent cards */}
-      {agents.map((agent) => (
-        <div className="card" key={agent.id}>
-          <div className="card-header">
-            <div>
-              <div className="card-title">{agent.name}</div>
-              <div className="card-description">{agent.description}</div>
-            </div>
-            <span className={`badge badge-${agent.vendor}`}>
-              {agent.vendor}
-            </span>
-          </div>
+      {/* Select All checkbox */}
+      {agents.length > 0 && (
+        <label className="flex items-center gap-sm text-muted">
+          <input
+            checked={selectedIds.size === agents.length && agents.length > 0}
+            onChange={toggleSelectAll}
+            type="checkbox"
+          />
+          Select All ({selectedIds.size} / {agents.length})
+        </label>
+      )}
 
-          <div className="card-actions">
-            <button
-              className="btn-secondary"
-              onClick={() => onEdit(agent)}
-              type="button"
-            >
-              Edit
-            </button>
-            <button
-              className="btn-success"
-              onClick={() => setDeployTarget({ agent, target: null })}
-              type="button"
-            >
-              Deploy
-            </button>
-            <button
-              className="btn-secondary"
-              onClick={() => handleExport(agent)}
-              type="button"
-            >
-              Export
-            </button>
-            <button
-              className="btn-danger"
-              onClick={() => setDeleteConfirm(agent)}
-              type="button"
-            >
-              Delete
-            </button>
+      {/* SubAgent cards with checkboxes */}
+      {agents.map((agent) => (
+        <div className="card card-selectable" key={agent.id}>
+          <label className="card-checkbox">
+            <input
+              checked={selectedIds.has(agent.id)}
+              onChange={() => toggleSelection(agent.id)}
+              type="checkbox"
+            />
+          </label>
+          <div className="card-content">
+            <div className="card-header">
+              <div>
+                <div className="card-title">{agent.name}</div>
+                <div className="card-description">{agent.description}</div>
+              </div>
+              <span className={`badge badge-${agent.vendor}`}>
+                {agent.vendor}
+              </span>
+            </div>
           </div>
         </div>
       ))}
 
-      {/* Deploy Modal */}
-      {!!deployTarget && (
-        // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal overlay pattern
-        <div
-          aria-label="Deploy modal"
-          className="modal-overlay"
-          onClick={closeModal}
-          onKeyDown={handleKeyDown}
-          role="dialog"
-        >
-          {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal content container */}
-          <div
-            aria-label="Deploy options"
-            className="modal"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-            role="document"
+      {/* Toolbar with action buttons */}
+      {agents.length > 0 && (
+        <div className="toolbar">
+          <button
+            className="btn-secondary"
+            disabled={!hasSingleSelection}
+            onClick={() => {
+              const agent = getSelectedAgents()[0];
+              if (agent) {
+                onEdit(agent);
+              }
+            }}
+            type="button"
           >
-            <h3 className="modal-title">Deploy "{deployTarget.agent.name}"</h3>
-
-            <div className="flex flex-col gap-md">
-              <label className="flex items-center gap-sm">
-                <input
-                  checked={deployTarget.target === "project"}
-                  name="deploy-target"
-                  onChange={() =>
-                    setDeployTarget({ ...deployTarget, target: "project" })
-                  }
-                  type="radio"
-                />
-                <div>
-                  <div>Project</div>
-                  <div className="form-hint">.subagents/ in workspace</div>
-                </div>
-              </label>
-
-              <label className="flex items-center gap-sm">
-                <input
-                  checked={deployTarget.target === "global"}
-                  name="deploy-target"
-                  onChange={() =>
-                    setDeployTarget({ ...deployTarget, target: "global" })
-                  }
-                  type="radio"
-                />
-                <div>
-                  <div>Global</div>
-                  <div className="form-hint">
-                    ~/.subagents/ for all projects
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            <div className="modal-actions">
-              <button
-                className="btn-secondary"
-                onClick={closeModal}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                className="btn-primary"
-                disabled={!deployTarget.target}
-                onClick={() => {
-                  if (deployTarget.target) {
-                    handleDeploy(deployTarget.agent, deployTarget.target);
-                  }
-                }}
-                type="button"
-              >
-                Deploy
-              </button>
-            </div>
-          </div>
+            Edit
+          </button>
+          <button
+            className="btn-success"
+            disabled={!hasSelection}
+            onClick={() => setDeployAgents(getSelectedAgents())}
+            type="button"
+          >
+            Deploy
+          </button>
+          <button
+            className="btn-secondary"
+            disabled={!hasSelection}
+            onClick={handleExport}
+            type="button"
+          >
+            Export
+          </button>
+          <button
+            className="btn-danger"
+            disabled={!hasSelection}
+            onClick={() => setDeleteAgents(getSelectedAgents())}
+            type="button"
+          >
+            Delete
+          </button>
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
-      {!!deleteConfirm && (
-        // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal overlay pattern
-        <div
-          aria-label="Delete confirmation"
-          className="modal-overlay"
-          onClick={closeModal}
-          onKeyDown={handleKeyDown}
-          role="dialog"
-        >
-          {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Modal content container */}
-          <div
-            aria-label="Confirm delete"
-            className="modal"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-            role="document"
-          >
-            <h3 className="modal-title">Delete "{deleteConfirm.name}"?</h3>
-            <p className="text-muted">This action cannot be undone.</p>
+      {/* Deploy Modal */}
+      {deployAgents !== null && (
+        <DeployModal
+          agents={deployAgents}
+          onClose={closeDeployModal}
+          onDeploy={handleDeploy}
+          onTargetChange={setDeployTarget}
+          selectedTarget={deployTarget}
+        />
+      )}
 
-            <div className="modal-actions">
-              <button
-                className="btn-secondary"
-                onClick={closeModal}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                className="btn-danger"
-                onClick={handleDeleteConfirm}
-                type="button"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Delete Modal */}
+      {deleteAgents !== null && (
+        <DeleteModal
+          agents={deleteAgents}
+          onClose={closeDeleteModal}
+          onConfirm={handleDeleteConfirm}
+        />
       )}
     </div>
   );

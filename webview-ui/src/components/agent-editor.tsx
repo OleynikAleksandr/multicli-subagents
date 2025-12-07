@@ -161,7 +161,7 @@ export const AgentEditor = ({
           Cancel
         </button>
         <button className="btn-primary" disabled={!name} type="submit">
-          {initialAgent ? "Save Changes" : "Create Agent"}
+          {initialAgent ? "Save Changes" : "Create SubAgent"}
         </button>
       </div>
     </form>

@@ -391,3 +391,53 @@ label {
 .w-full {
   width: 100%;
 }
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  background-color: var(--vscode-sidebar-bg);
+  border: 1px solid var(--vscode-border);
+  border-radius: var(--radius-lg);
+  flex-wrap: wrap;
+  position: sticky;
+  bottom: var(--spacing-md);
+}
+
+/* Selectable cards */
+.card-selectable {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  transition: border-color 0.15s ease;
+}
+
+.card-selectable:hover {
+  border-color: var(--vscode-accent);
+}
+
+.card-checkbox {
+  display: flex;
+  align-items: center;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.card-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--vscode-accent);
+}
+
+.card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-selectable .card-header {
+  margin-bottom: 0;
+}

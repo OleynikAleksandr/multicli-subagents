@@ -67,15 +67,14 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
     if (!(deployAgents && deployTarget)) {
       return;
     }
-    for (const agent of deployAgents) {
-      vscode.postMessage({
-        command:
-          deployTarget === "project"
-            ? "agent.deploy.project"
-            : "agent.deploy.global",
-        payload: agent,
-      });
-    }
+    // Use batch deploy to prevent race condition
+    vscode.postMessage({
+      command:
+        deployTarget === "project"
+          ? "agent.deploy.batch.project"
+          : "agent.deploy.batch.global",
+      payload: deployAgents,
+    });
     setDeployAgents(null);
     setDeployTarget(null);
     setSelectedIds(new Set());

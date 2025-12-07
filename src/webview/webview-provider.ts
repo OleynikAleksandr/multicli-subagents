@@ -68,6 +68,12 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
         case "agent.deploy.global":
           await this._handlers.handleDeployGlobal(data.payload);
           break;
+        case "agent.deploy.batch.project":
+          await this._handlers.handleBatchDeployProject(data.payload);
+          break;
+        case "agent.deploy.batch.global":
+          await this._handlers.handleBatchDeployGlobal(data.payload);
+          break;
         case "agent.export":
           await this._handlers.handleExport(data.payload);
           break;

@@ -74,6 +74,42 @@ export class MessageHandlers {
     }
   }
 
+  /**
+   * Deploy multiple agents sequentially (prevents race condition)
+   */
+  async handleBatchDeployProject(agents: SubAgent[]) {
+    try {
+      for (const agent of agents) {
+        await this._deps.deployService.deployToProject(agent);
+      }
+      vscode.window.showInformationMessage(
+        `${agents.length} SubAgent(s) deployed to Project!`
+      );
+    } catch (e) {
+      vscode.window.showErrorMessage(
+        `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
+      );
+    }
+  }
+
+  /**
+   * Deploy multiple agents sequentially (prevents race condition)
+   */
+  async handleBatchDeployGlobal(agents: SubAgent[]) {
+    try {
+      for (const agent of agents) {
+        await this._deps.deployService.deployToGlobal(agent);
+      }
+      vscode.window.showInformationMessage(
+        `${agents.length} SubAgent(s) deployed Globally!`
+      );
+    } catch (e) {
+      vscode.window.showErrorMessage(
+        `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
+      );
+    }
+  }
+
   async handleExport(agent: SubAgent) {
     try {
       await this._deps.exportImportService.exportAgent(agent);

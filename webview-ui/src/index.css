@@ -441,3 +441,11 @@ label {
 .card-selectable .card-header {
   margin-bottom: 0;
 }
+
+/* Select All row - aligned with card checkboxes */
+.selectall-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+}

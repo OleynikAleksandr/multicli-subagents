@@ -146,14 +146,18 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
 
       {/* Select All checkbox */}
       {agents.length > 0 && (
-        <label className="flex items-center gap-sm text-muted">
-          <input
-            checked={selectedIds.size === agents.length && agents.length > 0}
-            onChange={toggleSelectAll}
-            type="checkbox"
-          />
-          Select All ({selectedIds.size} / {agents.length})
-        </label>
+        <div className="selectall-row">
+          <label className="card-checkbox">
+            <input
+              checked={selectedIds.size === agents.length && agents.length > 0}
+              onChange={toggleSelectAll}
+              type="checkbox"
+            />
+          </label>
+          <span className="text-muted">
+            Select All ({selectedIds.size} / {agents.length})
+          </span>
+        </div>
       )}
 
       {/* SubAgent cards with checkboxes */}

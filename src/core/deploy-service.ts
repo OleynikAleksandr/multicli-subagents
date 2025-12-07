@@ -4,6 +4,7 @@ import { join } from "node:path";
 // biome-ignore lint/performance/noNamespaceImport: VS Code API requires namespace import
 import * as vscode from "vscode";
 import type { SubAgent } from "../models/sub-agent";
+import { AutoRoutingService } from "./auto-routing-service";
 import {
   CLAUDE_AUTO_COMMAND,
   CODEX_AUTO_COMMAND,
@@ -59,6 +60,10 @@ export class DeployService {
     await this._createCodexCommands(homeDir, agent, agentDir);
     // Claude: project-level (.claude/commands/)
     await this._createClaudeCommands(rootPath, agent, agentDir);
+
+    // 5. Ensure auto-routing instructions in global CLI config files
+    const autoRouting = new AutoRoutingService();
+    await autoRouting.ensureAutoRoutingInstructions();
   }
 
   /**
@@ -88,6 +93,10 @@ export class DeployService {
     // 4. Create global slash commands for both CLIs
     await this._createCodexCommands(homeDir, agent, agentDir);
     await this._createClaudeGlobalCommands(homeDir, agent, agentDir);
+
+    // 5. Ensure auto-routing instructions in global CLI config files
+    const autoRouting = new AutoRoutingService();
+    await autoRouting.ensureAutoRoutingInstructions();
   }
 
   /**

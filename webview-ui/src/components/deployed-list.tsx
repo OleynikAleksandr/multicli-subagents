@@ -124,6 +124,26 @@ export const DeployedList = ({ onEdit }: DeployedListProps) => {
         </div>
       )}
 
+      {/* Select All checkbox */}
+      {allAgents.length > 0 && (
+        <div className="selectall-row">
+          <label className="card-checkbox">
+            <input
+              checked={selectedIds.size === allAgents.length}
+              onChange={() => {
+                if (selectedIds.size === allAgents.length) {
+                  setSelectedIds(new Set());
+                } else {
+                  setSelectedIds(new Set(allAgents.map((a) => a.id)));
+                }
+              }}
+              type="checkbox"
+            />
+          </label>
+          <span className="text-muted">Select All</span>
+        </div>
+      )}
+
       {/* Project agents */}
       {projectAgents.length > 0 && (
         <>

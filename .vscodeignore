@@ -18,6 +18,8 @@ doc/
 scripts/
 .agent/
 .codex/
+.claude/
+.subagents/
 .husky/
 .github/
 .vscode-test/

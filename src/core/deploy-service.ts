@@ -4,6 +4,12 @@ import { join } from "node:path";
 // biome-ignore lint/performance/noNamespaceImport: VS Code API requires namespace import
 import * as vscode from "vscode";
 import type { SubAgent } from "../models/sub-agent";
+import {
+  CLAUDE_AUTO_COMMAND,
+  CODEX_AUTO_COMMAND,
+  generateClaudeIndividualCommand,
+  generateCodexIndividualCommand,
+} from "./command-templates";
 
 /**
  * Manifest file structure for .subagents/manifest.json
@@ -17,47 +23,10 @@ type ManifestFile = {
   }[];
 };
 
-/**
- * Slash command template for Codex CLI
- * Note: Codex only supports global prompts in ~/.codex/prompts/
- */
-const CODEX_SLASH_COMMAND = `---
-description: Call a SubAgent from .subagents/ folder
-argument-hint: NAME=<agent> TASK=<description>
----
-
-# Call SubAgent
-
-1. Read \`.subagents/manifest.json\` (or \`~/.subagents/manifest.json\` for global agents)
-2. Find agent by $NAME
-3. Read the instructions from \`instructionsPath\` field
-4. Execute \`commands.start\` with $TASK
-5. If agent asks questions, use \`commands.resume\`
-`;
-
-/**
- * Slash command template for Claude Code CLI
- */
-const CLAUDE_SLASH_COMMAND = `---
-description: Call a SubAgent from .subagents/ folder
-allowed-tools: Bash, Read
----
-
-# Call SubAgent
-
-$ARGUMENTS
-
-1. Read \`.subagents/manifest.json\` (or \`~/.subagents/manifest.json\` for global agents)
-2. Find agent matching the task
-3. Read the instructions from \`instructionsPath\` field
-4. Execute \`commands.start\`
-5. Handle follow-ups with \`commands.resume\`
-`;
-
 export class DeployService {
   /**
    * Deploy agent to project workspace (.subagents/)
-   * Creates slash command for Claude in project, Codex only globally
+   * Creates slash commands for Claude in project, Codex only globally
    */
   async deployToProject(agent: SubAgent): Promise<void> {
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -87,9 +56,9 @@ export class DeployService {
 
     // 4. Create slash commands
     // Codex: ONLY global (~/.codex/prompts/) - Codex doesn't support project-level prompts
-    await this._createCodexGlobalSlashCommand(homeDir);
+    await this._createCodexCommands(homeDir, agent, agentDir);
     // Claude: project-level (.claude/commands/)
-    await this._createClaudeSlashCommand(rootPath);
+    await this._createClaudeCommands(rootPath, agent, agentDir);
   }
 
   /**
@@ -117,8 +86,8 @@ export class DeployService {
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
     // 4. Create global slash commands for both CLIs
-    await this._createCodexGlobalSlashCommand(homeDir);
-    await this._createClaudeGlobalSlashCommand(homeDir);
+    await this._createCodexCommands(homeDir, agent, agentDir);
+    await this._createClaudeGlobalCommands(homeDir, agent, agentDir);
   }
 
   /**
@@ -168,43 +137,85 @@ export class DeployService {
   }
 
   /**
-   * Create Codex slash command ONLY globally
-   * Codex CLI doesn't support project-level prompts
+   * Create Codex slash commands (global only)
+   * - subagent-auto.md (auto-select)
+   * - subagent-{name}.md (individual)
    */
-  private async _createCodexGlobalSlashCommand(homeDir: string): Promise<void> {
+  private async _createCodexCommands(
+    homeDir: string,
+    agent: SubAgent,
+    agentDir: string
+  ): Promise<void> {
     const codexPromptsDir = join(homeDir, ".codex", "prompts");
     await mkdir(codexPromptsDir, { recursive: true });
+
+    // Auto-select command
     await writeFile(
-      join(codexPromptsDir, "call-subagent.md"),
-      CODEX_SLASH_COMMAND,
+      join(codexPromptsDir, "subagent-auto.md"),
+      CODEX_AUTO_COMMAND,
+      "utf-8"
+    );
+
+    // Individual command for this agent
+    await writeFile(
+      join(codexPromptsDir, `subagent-${agent.name}.md`),
+      generateCodexIndividualCommand(agent, agentDir),
       "utf-8"
     );
   }
 
   /**
-   * Create Claude slash command in project
+   * Create Claude slash commands in project
+   * - subagent-auto.md (auto-select)
+   * - subagent-{name}.md (individual)
    */
-  private async _createClaudeSlashCommand(rootPath: string): Promise<void> {
+  private async _createClaudeCommands(
+    rootPath: string,
+    agent: SubAgent,
+    agentDir: string
+  ): Promise<void> {
     const claudeCommandsDir = join(rootPath, ".claude", "commands");
     await mkdir(claudeCommandsDir, { recursive: true });
+
+    // Auto-select command
     await writeFile(
-      join(claudeCommandsDir, "call-subagent.md"),
-      CLAUDE_SLASH_COMMAND,
+      join(claudeCommandsDir, "subagent-auto.md"),
+      CLAUDE_AUTO_COMMAND,
+      "utf-8"
+    );
+
+    // Individual command for this agent
+    await writeFile(
+      join(claudeCommandsDir, `subagent-${agent.name}.md`),
+      generateClaudeIndividualCommand(agent, agentDir),
       "utf-8"
     );
   }
 
   /**
-   * Create Claude slash command globally
+   * Create Claude slash commands globally
+   * - subagent-auto.md (auto-select)
+   * - subagent-{name}.md (individual)
    */
-  private async _createClaudeGlobalSlashCommand(
-    homeDir: string
+  private async _createClaudeGlobalCommands(
+    homeDir: string,
+    agent: SubAgent,
+    agentDir: string
   ): Promise<void> {
     const claudeCommandsDir = join(homeDir, ".claude", "commands");
     await mkdir(claudeCommandsDir, { recursive: true });
+
+    // Auto-select command
     await writeFile(
-      join(claudeCommandsDir, "call-subagent.md"),
-      CLAUDE_SLASH_COMMAND,
+      join(claudeCommandsDir, "subagent-auto.md"),
+      CLAUDE_AUTO_COMMAND,
+      "utf-8"
+    );
+
+    // Individual command for this agent
+    await writeFile(
+      join(claudeCommandsDir, `subagent-${agent.name}.md`),
+      generateClaudeIndividualCommand(agent, agentDir),
       "utf-8"
     );
   }

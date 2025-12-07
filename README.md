@@ -19,6 +19,8 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Auto-Routing** — Automatic task delegation based on trigger keywords
 - **Import/Export** — Share SubAgents between users via `.subagent` files
 
+![Create SubAgent UI](docs/images/create-subagent-ui.png)
+
 ## Installation
 
 ### From VSIX (Alpha)

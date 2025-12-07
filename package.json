@@ -23,7 +23,7 @@
         {
           "id": "multicli-agents-container",
           "title": "SubAgents",
-          "icon": "resources/icon.svg"
+          "icon": "resources/icon.png"
         }
       ]
     },

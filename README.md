@@ -49,7 +49,7 @@ Instructions: |
 
 After deploy, use in Codex CLI or Claude Code CLI:
 ```
-/subagent-translator Translate this README to Russian
+/subagent-translator Translate this README to French
 ```
 
 ## Architecture

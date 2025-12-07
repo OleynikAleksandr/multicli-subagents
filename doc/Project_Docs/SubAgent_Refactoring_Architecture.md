@@ -106,7 +106,7 @@ If user's request matches any agent's description, delegate to that SubAgent.
 
 ### 3.1 Model Changes
 
-#### [MODIFY] [sub-agent.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-agents/src/models/sub-agent.ts)
+#### [MODIFY] [sub-agent.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-subagents/src/models/sub-agent.ts)
 
 ```diff
 export interface SubAgent {
@@ -125,7 +125,7 @@ export interface SubAgent {
 }
 ```
 
-#### [MODIFY] [types.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-agents/src/models/types.ts)
+#### [MODIFY] [types.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-subagents/src/models/types.ts)
 
 Обновить типы если нужно.
 
@@ -133,7 +133,7 @@ export interface SubAgent {
 
 ### 3.2 Deploy Service Changes
 
-#### [MODIFY] [deploy-service.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-agents/src/core/deploy-service.ts)
+#### [MODIFY] [deploy-service.ts](file:///Users/oleksandroliinyk/VSCODE/multicli-subagents/src/core/deploy-service.ts)
 
 **Изменения:**
 1. Папка `.codex/subagents/` → `.subagents/`

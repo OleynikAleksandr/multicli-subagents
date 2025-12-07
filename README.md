@@ -1,63 +1,68 @@
-# multicli-subagents
+# SubAgent Manager
 
-**Universal Sub-Agent System for AI CLI Tools (Codex, Claude, Gemini).**
+**VS Code Extension for managing AI Sub-Agents across CLI tools (Codex CLI, Claude Code).**
 
-![Extension Status](https://img.shields.io/badge/VS%20Code%20Extension-v0.0.1-blue)
-![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
-![Tests](https://img.shields.io/badge/Tests-Offline%20Passing-brightgreen)
+![Version](https://img.shields.io/badge/version-0.0.20-blue)
+![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Overview
 
-`multicli-subagents` is a powerful system for managing LLM Sub-Agents that operate across different CLI environments. It allows you to:
-1.  **Define Agents** once (as `.subagent` or JSON).
-2.  **Use Agents** in multiple CLIs (Codex, Claude Code).
-3.  **Manage Agents** via a user-friendly VS Code Extension.
+SubAgent Manager lets you create, organize, and deploy specialized AI assistants (Sub-Agents) that work within your existing AI CLI tools. Define an agent once, deploy it everywhere.
 
-## Features
+### Key Features
 
-- **Universal Sub-Agents**: Create agents compatible with multiple CLI tools.
-- **Auto-Routing**: Automatically delegate tasks based on triggers (e.g., "translate", "refactor").
-- **VS Code Extension (MVP)**:
-  - **Visual Editor**: Create and edit agents with a rich UI.
-  - **Local Library**: Manage your personal collection of agents.
-  - **Deploy**: One-click deploy to your project (`.codex/subagents`) or globally.
-  - **Import/Export**: Share agents easily via `.subagent` files.
+- **Visual Editor** — Create and edit SubAgents with a rich UI
+- **Library** — Personal collection of reusable SubAgents  
+- **Deploy** — One-click deploy to Project or Global scope
+- **Multi-CLI** — Works with Codex CLI and Claude Code
+- **Auto-Routing** — Automatic task delegation based on trigger keywords
+- **Import/Export** — Share SubAgents via `.subagent` files
 
 ## Installation
 
-### VS Code Extension
-Currently in Alpha (Local Install):
-1.  Download the latest `.vsix` release or build it yourself (see below).
-2.  In VS Code: `Extensions` -> `...` -> `Install from VSIX...`
-3.  Select `multicli-subagents-0.0.1.vsix`.
+### From VSIX (Alpha)
 
-### CLI Infrastructure
-To use the agents in your terminal:
-```bash
-# Setup infrastructure
-./codex-setup-subagents.sh
+1. Download `multicli-subagents-0.0.20.vsix`
+2. In VS Code: `Extensions` → `...` → `Install from VSIX...`
+3. Select the downloaded file
+
+## Quick Start
+
+1. **Open** SubAgent Manager from the Activity Bar (MsA icon)
+2. **Create** a new SubAgent with name, triggers, and instructions
+3. **Deploy** to Project (current workspace) or Global (all projects)
+4. **Use** the SubAgent via slash command in Codex/Claude
+
+### Example: Translator SubAgent
+
+```yaml
+Name: translator
+Triggers: translate, перевод, übersetzen
+Instructions: |
+  You are a professional translator.
+  Translate the given text to the requested language.
+  Preserve formatting and technical terms.
 ```
 
-## Usage
+After deploy, use in Codex CLI:
+```
+/subagent-translator Translate this README to Russian
+```
 
-### 1. Managing Agents (VS Code)
-1.  Open the **SubAgent Manager** view in the Activity Bar (Agent icon).
-2.  **Create Agent**: Click `+ New Agent`. Fill in the name, description, triggers, and prompt instructions.
-3.  **Edit**: Click on any agent in the "Library" or "Project" lists.
-4.  **Deploy**: 
-    - Click **Deploy to Project** to make the agent available in the current workspace.
-    - Click **Deploy Globally** to make it available for all projects.
+## Architecture
 
-### 2. Using Agents (CLI)
-Restart your CLI session (Codex/Claude) and use the routed commands.
+```
+~/.subagents/           # Global SubAgents storage
+├── manifest.json       # Registry of deployed agents
+└── {agent}/            # Agent directory
+    └── {agent}.md      # Agent instructions
 
-**Codex Example:**
-```bash
-# Explicit call
-/prompts:subagent AGENT=translator TASK="Translate README to Russian"
+~/.codex/prompts/       # Codex slash commands
+└── subagent-{name}.md  # Individual agent command
 
-# Auto-routing (if triggers are matched)
-Translate this file to French
+~/.claude/commands/     # Claude slash commands  
+└── subagent-{name}.md  # Individual agent command
 ```
 
 ## Development
@@ -66,23 +71,38 @@ Translate this file to French
 - Node.js 18+
 - VS Code 1.85+
 
-### Build & Run
+### Build
+
 ```bash
-# Install dependencies
 npm install
-
-# Compile extension
 npm run compile
-
-# Run Unit Tests (Offline)
-npm run test:offline
-
-# Run Full Build & Check
-./scripts/build-release.sh --use-current-version
+./scripts/build-release.sh
 ```
 
-## Architecture
-See [Architecture Documentation](doc/Project_Docs/VSCode_Extension_Architecture.md) for details on the internal structure and design decisions.
+### Project Structure
+
+```
+src/
+├── core/               # Business logic
+│   ├── deploy-service.ts
+│   ├── library-service.ts
+│   └── auto-routing-service.ts
+├── models/             # Data models
+│   └── sub-agent.ts
+├── webview/            # VS Code integration
+│   ├── webview-provider.ts
+│   └── message-handlers.ts
+└── extension.ts        # Entry point
+
+webview-ui/             # React UI
+└── src/components/     # UI components
+```
+
+## Documentation
+
+- [Changelog](CHANGELOG.md)
+- [Architecture](doc/Project_Docs/VSCode_Extension_Architecture.md)
 
 ## License
+
 MIT

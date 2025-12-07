@@ -1,8 +1,8 @@
-# Session 001 — multicli-agents MVP + Architecture
+# Session 001 — multicli-subagents MVP + Architecture
 
 **Date:** 2025-12-05 10:07 - 14:55 (Europe/Berlin)
 **Branch:** main
-**Project:** multicli-agents (renamed from CodexSubAgets)
+**Project:** multicli-subagents (renamed from CodexSubAgets)
 
 ---
 
@@ -40,7 +40,7 @@
 - `13c249a` docs: Phase 3 architecture
 - `7c64dbc` docs: .subagent format
 - `57b6800` docs: reorganization
-- `f3942e1` chore: rename to multicli-agents
+- `f3942e1` chore: rename to multicli-subagents
 
 ---
 

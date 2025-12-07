@@ -115,4 +115,4 @@ fdb020e style: dark theme UI foundation
 
 ---
 
-**Latest Release:** `multicli-agents-0.0.7.vsix` (496 KB)
+**Latest Release:** `multicli-subagents-0.0.7.vsix` (496 KB)

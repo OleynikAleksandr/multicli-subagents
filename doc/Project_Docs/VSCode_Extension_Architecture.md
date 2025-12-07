@@ -294,7 +294,7 @@ npx ultracite check
 
 ## 10. Принятые решения
 
-- **Название Extension:** `multicli-agents`
+- **Название Extension:** `multicli-subagents`
 - **Publisher ID:** `OleksandrOliinyk`
 - **Мин. версия VS Code:** 1.85+
 - **GitHub username:** `OleksandrOliinyk`

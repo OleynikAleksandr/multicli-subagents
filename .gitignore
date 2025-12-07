@@ -24,3 +24,8 @@ dist/
 
 # Releases
 *.vsix
+
+# Local data (development)
+.claude/
+.subagents/
+.gemini/

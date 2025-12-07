@@ -20,7 +20,7 @@
 - `a174d24` docs: add VS Code Extension architecture and update todo-plan for Phase 3
 
 ## Принятые решения
-- **Extension name:** `multicli-agents`
+- **Extension name:** `multicli-subagents`
 - **Publisher ID:** `OleksandrOliinyk`
 - **VS Code min version:** 1.85+
 - **CLI агенты:** Codex + Claude Code (MVP)

@@ -23,11 +23,10 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 
 ## Installation
 
-### From VSIX (Alpha)
+Download the latest `.vsix` release from [Releases](https://github.com/OleynikAleksandr/multicli-subagents/releases) and install in VS Code:
 
-1. Download `multicli-subagents-0.0.20.vsix`
-2. In VS Code: `Extensions` → `...` → `Install from VSIX...`
-3. Select the downloaded file
+1. In VS Code: `Extensions` → `...` → `Install from VSIX...`
+2. Select the downloaded `.vsix` file
 
 ## Quick Start
 
@@ -68,43 +67,9 @@ After deploy, use in Codex CLI or Claude Code CLI:
 └── subagent-{name}.md  # Individual agent command
 ```
 
-## Development
-
-### Prerequisites
-- Node.js 18+
-- VS Code 1.85+
-
-### Build
-
-```bash
-npm install
-npm run compile
-./scripts/build-release.sh
-```
-
-### Project Structure
-
-```
-src/
-├── core/               # Business logic
-│   ├── deploy-service.ts
-│   ├── library-service.ts
-│   └── auto-routing-service.ts
-├── models/             # Data models
-│   └── sub-agent.ts
-├── webview/            # VS Code integration
-│   ├── webview-provider.ts
-│   └── message-handlers.ts
-└── extension.ts        # Entry point
-
-webview-ui/             # React UI
-└── src/components/     # UI components
-```
-
 ## Documentation
 
 - [Changelog](CHANGELOG.md)
-- [Architecture](doc/Project_Docs/VSCode_Extension_Architecture.md)
 
 ## License
 

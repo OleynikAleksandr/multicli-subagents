@@ -13,10 +13,6 @@ out/
 dist/
 
 # IDE
-.vscode/*
-!.vscode/launch.json
-!.vscode/tasks.json
-!.vscode/extensions.json
 .idea/
 
 # Testing
@@ -25,10 +21,19 @@ dist/
 # Releases
 *.vsix
 
-# Local data (development)
+# Development files (not for GitHub)
+doc/
+.agent/
 .claude/
+.husky/
 .subagents/
+.vscode/
 .gemini/
+scripts/
+AGENTS.md
+biome.jsonc
+lefthook.yml
+.jscpd.json
 
-# Local docs (not for GitHub)
+# Local docs
 README_ru.md

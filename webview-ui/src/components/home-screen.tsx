@@ -1,14 +1,16 @@
 /**
- * Home Screen - Entry point with Create/Browse options
+ * Home Screen - Entry point with Create/Library/Deployed options
  */
 type HomeScreenProps = {
   onCreateClick: () => void;
-  onBrowseClick: () => void;
+  onLibraryClick: () => void;
+  onDeployedClick: () => void;
 };
 
 export const HomeScreen = ({
   onCreateClick,
-  onBrowseClick,
+  onLibraryClick,
+  onDeployedClick,
 }: HomeScreenProps) => (
   <div
     className="container flex flex-col items-center justify-center"
@@ -19,7 +21,7 @@ export const HomeScreen = ({
       Create and manage sub-agents for Codex CLI and Claude Code CLI
     </p>
 
-    <div className="mt-md flex gap-lg">
+    <div className="mt-md flex flex-col gap-md" style={{ width: "280px" }}>
       <button
         className="btn-primary btn-large"
         onClick={onCreateClick}
@@ -29,10 +31,17 @@ export const HomeScreen = ({
       </button>
       <button
         className="btn-secondary btn-large"
-        onClick={onBrowseClick}
+        onClick={onLibraryClick}
         type="button"
       >
-        Browse
+        Library
+      </button>
+      <button
+        className="btn-success btn-large"
+        onClick={onDeployedClick}
+        type="button"
+      >
+        Deployed
       </button>
     </div>
   </div>

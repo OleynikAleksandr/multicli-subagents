@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { AgentEditor } from "./components/agent-editor";
 import { AgentList } from "./components/agent-list";
+import { DeployedList } from "./components/deployed-list";
 import { HomeScreen } from "./components/home-screen";
 import type { SubAgent } from "./models/types";
 
 /**
  * Screen types for routing
  */
-type Screen = "home" | "create" | "browse" | "edit";
+type Screen = "home" | "create" | "library" | "deployed" | "edit";
 
 function App() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -23,8 +24,12 @@ function App() {
     setScreen("create");
   };
 
-  const handleBrowse = () => {
-    setScreen("browse");
+  const handleLibrary = () => {
+    setScreen("library");
+  };
+
+  const handleDeployed = () => {
+    setScreen("deployed");
   };
 
   const handleEdit = (agent: SubAgent) => {
@@ -33,17 +38,21 @@ function App() {
   };
 
   const handleSave = () => {
-    setScreen("browse");
+    setScreen("library");
     setSelectedAgent(null);
   };
 
   return (
     <>
       {screen === "home" && (
-        <HomeScreen onBrowseClick={handleBrowse} onCreateClick={handleCreate} />
+        <HomeScreen
+          onCreateClick={handleCreate}
+          onDeployedClick={handleDeployed}
+          onLibraryClick={handleLibrary}
+        />
       )}
 
-      {screen === "browse" && (
+      {screen === "library" && (
         <div className="container">
           <div className="header">
             <button
@@ -53,9 +62,25 @@ function App() {
             >
               ← Back
             </button>
-            <h2>Browse SubAgents</h2>
+            <h2>Library</h2>
           </div>
           <AgentList onCreate={handleCreate} onEdit={handleEdit} />
+        </div>
+      )}
+
+      {screen === "deployed" && (
+        <div className="container">
+          <div className="header">
+            <button
+              className="btn-secondary back-button"
+              onClick={goHome}
+              type="button"
+            >
+              ← Back
+            </button>
+            <h2>Deployed SubAgents</h2>
+          </div>
+          <DeployedList onEdit={handleEdit} />
         </div>
       )}
 

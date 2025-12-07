@@ -1,27 +1,34 @@
 // biome-ignore lint/performance/noNamespaceImport: VS Code API
 import * as vscode from "vscode";
 import type { DeployService } from "../core/deploy-service";
+import type { DeployedService } from "../core/deployed-service";
 import type { ExportImportService } from "../core/export-import-service";
 import type { SubAgentService } from "../core/sub-agent-service";
+import { MessageHandlers } from "./message-handlers";
+
+export type WebviewProviderOptions = {
+  extensionUri: vscode.Uri;
+  subAgentService: SubAgentService;
+  deployService: DeployService;
+  deployedService: DeployedService;
+  exportImportService: ExportImportService;
+};
 
 export class WebviewProvider implements vscode.WebviewViewProvider {
   static readonly viewType = "multicli-agents.webview";
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
-  private readonly _subAgentService: SubAgentService;
-  private readonly _deployService: DeployService;
-  private readonly _exportImportService: ExportImportService;
+  private readonly _handlers: MessageHandlers;
 
-  constructor(
-    extensionUri: vscode.Uri,
-    subAgentService: SubAgentService,
-    deployService: DeployService,
-    exportImportService: ExportImportService
-  ) {
-    this._extensionUri = extensionUri;
-    this._subAgentService = subAgentService;
-    this._deployService = deployService;
-    this._exportImportService = exportImportService;
+  constructor(options: WebviewProviderOptions) {
+    this._extensionUri = options.extensionUri;
+    this._handlers = new MessageHandlers({
+      subAgentService: options.subAgentService,
+      deployService: options.deployService,
+      deployedService: options.deployedService,
+      exportImportService: options.exportImportService,
+      postMessage: (cmd, payload) => this._postMessage(cmd, payload),
+    });
   }
 
   resolveWebviewView(
@@ -37,131 +44,64 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    this._setupMessageHandler(webviewView);
+  }
 
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Switch statement is large but simple
+  private _setupMessageHandler(webviewView: vscode.WebviewView) {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.command) {
-        case "hello": {
-          vscode.window.showInformationMessage(data.payload.text);
+        case "agent.list":
+          await this._handlers.handleAgentList();
           break;
-        }
-        case "agent.list": {
-          const agents = await this._subAgentService.getAgents();
-          if (this._view) {
-            this._view.webview.postMessage({
-              command: "agent.list.result",
-              payload: agents,
-            });
-          }
+        case "agent.create":
+          await this._handlers.handleAgentCreate(data.payload);
           break;
-        }
-        case "agent.create": {
-          await this._subAgentService.createAgent(data.payload);
-          vscode.window.showInformationMessage(
-            `Agent ${data.payload.name} created!`
+        case "agent.update":
+          await this._handlers.handleAgentUpdate(data.payload);
+          break;
+        case "agent.delete":
+          await this._handlers.handleAgentDelete(data.payload.id);
+          break;
+        case "agent.deploy.project":
+          await this._handlers.handleDeployProject(data.payload);
+          break;
+        case "agent.deploy.global":
+          await this._handlers.handleDeployGlobal(data.payload);
+          break;
+        case "agent.export":
+          await this._handlers.handleExport(data.payload);
+          break;
+        case "agent.import":
+          await this._handlers.handleImport();
+          break;
+        case "deployed.list":
+          await this._handlers.handleDeployedList();
+          break;
+        case "deployed.undeploy":
+          await this._handlers.handleUndeploy(
+            data.payload.name,
+            data.payload.source
           );
-          // Trigger refresh
-          const agents = await this._subAgentService.getAgents();
-          if (this._view) {
-            this._view.webview.postMessage({
-              command: "agent.list.result",
-              payload: agents,
-            });
-          }
           break;
-        }
-        case "agent.update": {
-          await this._subAgentService.updateAgent(data.payload);
-          vscode.window.showInformationMessage(
-            `Agent ${data.payload.name} updated!`
+        case "deployed.saveToLibrary":
+          await this._handlers.handleSaveToLibrary(
+            data.payload.agent,
+            data.payload.overwrite
           );
-          // Trigger refresh
-          const agents = await this._subAgentService.getAgents();
-          if (this._view) {
-            this._view.webview.postMessage({
-              command: "agent.list.result",
-              payload: agents,
-            });
-          }
           break;
-        }
-        case "agent.delete": {
-          await this._subAgentService.deleteAgent(data.payload.id);
-          vscode.window.showInformationMessage("Agent deleted!");
-          // Trigger refresh
-          const agents = await this._subAgentService.getAgents();
-          if (this._view) {
-            this._view.webview.postMessage({
-              command: "agent.list.result",
-              payload: agents,
-            });
-          }
+        case "library.checkExists":
+          await this._handlers.handleCheckExists(data.payload.name);
           break;
-        }
-        case "agent.deploy.project": {
-          try {
-            await this._deployService.deployToProject(data.payload);
-            vscode.window.showInformationMessage(
-              `Agent ${data.payload.name} deployed to Project!`
-            );
-          } catch (e) {
-            vscode.window.showErrorMessage(
-              `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
-            );
-          }
-          break;
-        }
-        case "agent.deploy.global": {
-          try {
-            await this._deployService.deployToGlobal(data.payload);
-            vscode.window.showInformationMessage(
-              `Agent ${data.payload.name} deployed Globally!`
-            );
-          } catch (e) {
-            vscode.window.showErrorMessage(
-              `Failed to deploy: ${e instanceof Error ? e.message : String(e)}`
-            );
-          }
-          break;
-        }
-        case "agent.export": {
-          try {
-            await this._exportImportService.exportAgent(data.payload);
-          } catch (e) {
-            vscode.window.showErrorMessage(
-              `Failed to export: ${e instanceof Error ? e.message : String(e)}`
-            );
-          }
-          break;
-        }
-        case "agent.import": {
-          try {
-            const agent = await this._exportImportService.importAgent();
-            if (agent) {
-              await this._subAgentService.createAgent(agent);
-              vscode.window.showInformationMessage(
-                `Agent "${agent.name}" imported!`
-              );
-              // Refresh
-              const agents = await this._subAgentService.getAgents();
-              if (this._view) {
-                this._view.webview.postMessage({
-                  command: "agent.list.result",
-                  payload: agents,
-                });
-              }
-            }
-          } catch (e) {
-            vscode.window.showErrorMessage(
-              `Failed to import: ${e instanceof Error ? e.message : String(e)}`
-            );
-          }
-          break;
-        }
         default:
           break;
       }
     });
+  }
+
+  private _postMessage(command: string, payload: unknown) {
+    if (this._view) {
+      this._view.webview.postMessage({ command, payload });
+    }
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
@@ -171,15 +111,6 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
       "webview",
       "assets"
     );
-
-    // Get the build manifest to find the correct file names
-    // For simplicity in MVP, we assume rigid naming or use a glob pattern if needed.
-    // However, Vite build with our config produces specific names or we can rely on standard Vite behavior.
-    // In our vite.config.ts we set entryFileNames: `assets/[name].js`.
-    // Let's verify what the build actually produced.
-
-    // Note: In a real production extension, we usually read manifest.json or directory to find hashed filenames.
-    // Since we configured vite.config.ts to output predictable names (assets/index.js), we can try that.
 
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(assetsUri, "index.js")

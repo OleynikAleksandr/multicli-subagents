@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { vscode } from "../api/vscode";
 import type { SubAgent } from "../models/types";
+import { AgentCard } from "./agent-card";
 import { DeleteModal } from "./delete-modal";
 import { DeployModal } from "./deploy-modal";
 
@@ -162,26 +163,12 @@ export const AgentList = ({ onCreate, onEdit }: AgentListProps) => {
 
       {/* SubAgent cards with checkboxes */}
       {agents.map((agent) => (
-        <div className="card card-selectable" key={agent.id}>
-          <label className="card-checkbox">
-            <input
-              checked={selectedIds.has(agent.id)}
-              onChange={() => toggleSelection(agent.id)}
-              type="checkbox"
-            />
-          </label>
-          <div className="card-content">
-            <div className="card-header">
-              <div>
-                <div className="card-title">{agent.name}</div>
-                <div className="card-description">{agent.description}</div>
-              </div>
-              <span className={`badge badge-${agent.vendor}`}>
-                {agent.vendor}
-              </span>
-            </div>
-          </div>
-        </div>
+        <AgentCard
+          agent={agent}
+          isSelected={selectedIds.has(agent.id)}
+          key={agent.id}
+          onToggle={() => toggleSelection(agent.id)}
+        />
       ))}
 
       {/* Toolbar with action buttons */}

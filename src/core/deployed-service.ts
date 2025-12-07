@@ -4,6 +4,7 @@ import { join } from "node:path";
 // biome-ignore lint/performance/noNamespaceImport: VS Code API requires namespace import
 import * as vscode from "vscode";
 import type { SubAgent, SubAgentVendor } from "../models/sub-agent";
+import { AutoRoutingService } from "./auto-routing-service";
 
 /**
  * Manifest agent entry from .subagents/manifest.json
@@ -58,7 +59,7 @@ export class DeployedService {
   }
 
   /**
-   * Remove a deployed SubAgent
+   * Remove a deployed SubAgent with full cleanup
    */
   async undeployAgent(
     name: string,
@@ -69,22 +70,110 @@ export class DeployedService {
       throw new Error("No workspace open for project undeploy");
     }
 
+    const homeDir = homedir();
     const subagentsDir = join(baseDir, ".subagents");
     const agentDir = join(subagentsDir, name);
     const manifestFile = join(subagentsDir, "manifest.json");
 
-    // Remove agent directory
+    // 1. Remove agent directory
     await rm(agentDir, { recursive: true, force: true });
 
-    // Update manifest
+    // 2. Update manifest and check if last agent
+    let remainingAgents = 0;
     try {
       const content = await readFile(manifestFile, "utf-8");
       const manifest: ManifestFile = JSON.parse(content);
       manifest.agents = manifest.agents.filter((a) => a.name !== name);
+      remainingAgents = manifest.agents.length;
       await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
     } catch (_ignored) {
       // Manifest doesn't exist or is invalid
     }
+
+    // 3. Remove slash commands for this agent
+    await this._removeSlashCommands(name, source, homeDir, baseDir);
+
+    // 4. If last agent, remove auto-routing and subagent-auto commands
+    if (remainingAgents === 0) {
+      await this._cleanupLastAgent(source, homeDir, baseDir);
+    }
+  }
+
+  /**
+   * Remove slash commands for a specific agent
+   */
+  private async _removeSlashCommands(
+    name: string,
+    source: "project" | "global",
+    homeDir: string,
+    baseDir: string
+  ): Promise<void> {
+    const commandFileName = `subagent-${name}.md`;
+
+    // Codex: always in ~/.codex/prompts/
+    const codexCommand = join(homeDir, ".codex", "prompts", commandFileName);
+    await rm(codexCommand, { force: true });
+
+    // Claude: depends on source
+    if (source === "project") {
+      // Project: .claude/commands/
+      const claudeCommand = join(
+        baseDir,
+        ".claude",
+        "commands",
+        commandFileName
+      );
+      await rm(claudeCommand, { force: true });
+    } else {
+      // Global: ~/.claude/commands/
+      const claudeCommand = join(
+        homeDir,
+        ".claude",
+        "commands",
+        commandFileName
+      );
+      await rm(claudeCommand, { force: true });
+    }
+  }
+
+  /**
+   * Cleanup when last agent is undeployed
+   */
+  private async _cleanupLastAgent(
+    source: "project" | "global",
+    homeDir: string,
+    baseDir: string
+  ): Promise<void> {
+    // Remove subagent-auto command
+    const codexAutoCommand = join(
+      homeDir,
+      ".codex",
+      "prompts",
+      "subagent-auto.md"
+    );
+    await rm(codexAutoCommand, { force: true });
+
+    if (source === "project") {
+      const claudeAutoCommand = join(
+        baseDir,
+        ".claude",
+        "commands",
+        "subagent-auto.md"
+      );
+      await rm(claudeAutoCommand, { force: true });
+    } else {
+      const claudeAutoCommand = join(
+        homeDir,
+        ".claude",
+        "commands",
+        "subagent-auto.md"
+      );
+      await rm(claudeAutoCommand, { force: true });
+    }
+
+    // Remove auto-routing section from global configs
+    const autoRouting = new AutoRoutingService();
+    await autoRouting.removeAutoRoutingInstructions();
   }
 
   private _getBaseDir(source: "project" | "global"): string | null {

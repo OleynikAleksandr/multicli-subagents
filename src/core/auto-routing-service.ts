@@ -101,4 +101,52 @@ export class AutoRoutingService {
     const newContent = content + routingSection;
     await writeFile(filePath, newContent, "utf-8");
   }
+
+  /**
+   * Remove auto-routing section from global CLI config files
+   * Called when last SubAgent is undeployed
+   */
+  async removeAutoRoutingInstructions(): Promise<void> {
+    const homeDir = homedir();
+
+    await Promise.all([
+      this._removeRoutingFromFile(join(homeDir, ".codex", "AGENTS.md")),
+      this._removeRoutingFromFile(join(homeDir, ".claude", "CLAUDE.md")),
+    ]);
+  }
+
+  /**
+   * Remove routing section from file
+   */
+  private async _removeRoutingFromFile(filePath: string): Promise<void> {
+    let content = "";
+
+    try {
+      content = await readFile(filePath, "utf-8");
+    } catch (_ignored) {
+      return; // File doesn't exist, nothing to remove
+    }
+
+    // Check if has routing section
+    if (!content.includes(ROUTING_MARKER_START)) {
+      return; // No routing section, nothing to remove
+    }
+
+    // Remove the routing section (including markers)
+    const startIdx = content.indexOf(ROUTING_MARKER_START);
+    const endIdx = content.indexOf(ROUTING_MARKER_END);
+
+    if (startIdx === -1 || endIdx === -1) {
+      return; // Malformed markers
+    }
+
+    // Remove from start marker to end marker (inclusive) plus trailing newline
+    const beforeSection = content.substring(0, startIdx);
+    const afterSection = content.substring(
+      endIdx + ROUTING_MARKER_END.length + 1
+    );
+
+    const newContent = beforeSection + afterSection;
+    await writeFile(filePath, `${newContent.trim()}\n`, "utf-8");
+  }
 }

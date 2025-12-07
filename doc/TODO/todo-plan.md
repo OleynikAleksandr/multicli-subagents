@@ -196,13 +196,32 @@
 41. [SKIPPED] Удалить старые компоненты
     - Файлы agent-list.tsx и agent-editor.tsx были обновлены, а не заменены
 
-42. [DEFERRED] Создать UI Facade
-    - Отложено — структура компонентов достаточна для MVP
-    - ⚠️ agent-list.tsx на 270 строках, в будущем выделить Deploy Modal
+42. [DONE] Создать UI Facade — выделены модальные компоненты
+    - Commit: `86e417e feat: UI refactoring - SubAgent terminology and list with checkboxes`
 
 43. [TODO] Ручное тестирование и фиксы
     - F5 → тест полного flow
     - Commit: `fix: UI polish after testing`
+
+#### Stream 3.11: UI Polish (Session006)
+44. [DONE] Терминология "Agent" → "SubAgent"
+    - `agent-editor.tsx`: кнопка "Create SubAgent"
+    - `agent-list.tsx`: сообщения
+    - Commit: `86e417e`
+
+45. [DONE] Список с чекбоксами и toolbar
+    - Чекбоксы у каждого SubAgent
+    - Select All
+    - Общий toolbar внизу
+    - Edit доступен только для 1 выбранного
+    - Batch deploy/export/delete
+    - Commit: `86e417e`
+
+46. [DONE] Выделение модальных компонентов
+    - `deploy-modal.tsx` (97 строк)
+    - `delete-modal.tsx` (60 строк)
+    - `agent-list.tsx` = 247 строк
+    - Commit: `86e417e`
 
 ---
 

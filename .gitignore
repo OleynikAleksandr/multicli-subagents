@@ -29,3 +29,6 @@ dist/
 .claude/
 .subagents/
 .gemini/
+
+# Local docs (not for GitHub)
+README_ru.md

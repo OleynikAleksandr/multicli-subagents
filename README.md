@@ -16,6 +16,7 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Library** — Personal collection of reusable SubAgents  
 - **Deploy** — One-click deploy to Project or Global scope
 - **Multi-CLI** — Works with Codex CLI and Claude Code CLI as Main Orchestrator Agents. Creates SubAgents for either Codex CLI or Claude Code CLI. Requires user authorization in Codex CLI and Claude Code CLI.
+- **Interactive Conversation** — SubAgents support full interactive dialogue, not just one-shot responses
 - **Auto-Routing** — Automatic task delegation based on trigger keywords
 - **Import/Export** — Share SubAgents between users via `.subagent` files
 

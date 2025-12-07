@@ -9,7 +9,7 @@ import { CodexProvider } from "./providers/codex-provider";
 import { WebviewProvider } from "./webview/webview-provider";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Extension "multicli-agents" is now active!');
+  console.log('Extension "multicli-subagents" is now active!');
 
   // Initialize Core Services
   const subAgentService = new SubAgentService(context);
@@ -38,10 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   const disposable = vscode.commands.registerCommand(
-    "multicli-agents.open",
+    "multicli-subagents.open",
     () => {
       vscode.commands.executeCommand(
-        "workbench.view.extension.multicli-agents-view"
+        "workbench.view.extension.multicli-subagents-view"
       );
     }
   );

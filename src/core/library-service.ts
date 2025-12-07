@@ -2,7 +2,7 @@ import type * as vscode from "vscode";
 import type { SubAgent } from "../models/sub-agent";
 
 export class LibraryService {
-  private readonly STORAGE_KEY = "multicli-agents.library.agents";
+  private readonly STORAGE_KEY = "multicli-subagents.library.agents";
   private readonly context: vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext) {

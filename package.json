@@ -1,12 +1,12 @@
 {
-  "name": "multicli-agents",
+  "name": "multicli-subagents",
   "displayName": "SubAgent Manager",
   "description": "Manage CLI Sub-Agents inside VS Code",
   "version": "0.0.19",
   "publisher": "OleksandrOliinyk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OleksandrOliinyk/multicli-agents.git"
+    "url": "https://github.com/OleksandrOliinyk/multicli-subagents.git"
   },
   "icon": "resources/icon.png",
   "engines": {
@@ -21,24 +21,24 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "multicli-agents-container",
+          "id": "multicli-subagents-container",
           "title": "SubAgents",
           "icon": "resources/icon.svg"
         }
       ]
     },
     "views": {
-      "multicli-agents-container": [
+      "multicli-subagents-container": [
         {
           "type": "webview",
-          "id": "multicli-agents.webview",
+          "id": "multicli-subagents.webview",
           "name": "SubAgent Manager"
         }
       ]
     },
     "commands": [
       {
-        "command": "multicli-agents.open",
+        "command": "multicli-subagents.open",
         "title": "SubAgent Manager: Open"
       }
     ]

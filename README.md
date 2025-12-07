@@ -1,4 +1,4 @@
-# multicli-agents
+# multicli-subagents
 
 **Universal Sub-Agent System for AI CLI Tools (Codex, Claude, Gemini).**
 
@@ -8,7 +8,7 @@
 
 ## Overview
 
-`multicli-agents` is a powerful system for managing LLM Sub-Agents that operate across different CLI environments. It allows you to:
+`multicli-subagents` is a powerful system for managing LLM Sub-Agents that operate across different CLI environments. It allows you to:
 1.  **Define Agents** once (as `.subagent` or JSON).
 2.  **Use Agents** in multiple CLIs (Codex, Claude Code).
 3.  **Manage Agents** via a user-friendly VS Code Extension.
@@ -29,7 +29,7 @@
 Currently in Alpha (Local Install):
 1.  Download the latest `.vsix` release or build it yourself (see below).
 2.  In VS Code: `Extensions` -> `...` -> `Install from VSIX...`
-3.  Select `multicli-agents-0.0.1.vsix`.
+3.  Select `multicli-subagents-0.0.1.vsix`.
 
 ### CLI Infrastructure
 To use the agents in your terminal:

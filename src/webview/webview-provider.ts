@@ -15,7 +15,7 @@ export type WebviewProviderOptions = {
 };
 
 export class WebviewProvider implements vscode.WebviewViewProvider {
-  static readonly viewType = "multicli-agents.webview";
+  static readonly viewType = "multicli-subagents.webview";
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
   private readonly _handlers: MessageHandlers;

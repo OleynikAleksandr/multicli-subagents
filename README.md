@@ -21,7 +21,7 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
   - Codex CLI: `/prompts:subagent-{name}` (e.g., `/prompts:subagent-translator`)
   - Claude Code: `/subagent-{name}` (e.g., `/subagent-translator`)
 - **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent (if not done automatically)
-- **Auto-Routing** — Automatic task delegation based on trigger keywords
+- **Auto-Routing** — The Main Orchestrator Agent receives a global instruction to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
 - **Import/Export** — Share SubAgents between users via `.subagent` files
 
 ![Create SubAgent UI](docs/images/create-subagent-ui.png)

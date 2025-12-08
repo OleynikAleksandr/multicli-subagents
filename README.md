@@ -18,8 +18,9 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Multi-CLI** — Works with Codex CLI and Claude Code CLI as Main Orchestrator Agents. Creates SubAgents for either Codex CLI or Claude Code CLI. Requires user authorization in Codex CLI and Claude Code CLI.
 - **Interactive Conversation** — SubAgents support full interactive dialogue, not just one-shot responses
 - **Slash Commands** — Auto-generated slash commands for manual SubAgent invocation:
-  - Codex CLI: `/subagent-{name}` (e.g., `/subagent-translator`)
-  - Claude Code: `/user:subagent-{name}` (e.g., `/user:subagent-translator`)
+  - Codex CLI: `/prompts:subagent-{name}` (e.g., `/prompts:subagent-translator`)
+  - Claude Code: `/subagent-{name}` (e.g., `/subagent-translator`)
+- **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent (if not done automatically)
 - **Auto-Routing** — Automatic task delegation based on trigger keywords
 - **Import/Export** — Share SubAgents between users via `.subagent` files
 

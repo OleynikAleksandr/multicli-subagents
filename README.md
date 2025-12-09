@@ -23,7 +23,12 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent (if not done automatically)
 - **Auto-Routing** — The Main Orchestrator Agent receives a global instruction to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
 - **Import/Export** — Share SubAgents between users via `.subagent` files
-- **Clean Orchestrator Output** — SubAgent responses are clean and parseable. Internal logs (`thinking`, `exec`) are suppressed via `2>/dev/null`, so the Main Agent receives only the final answer
+- **Clean Orchestrator Output** — When the Main Agent calls a SubAgent, it receives **only the final answer**, not the entire stream of internal processing. Without this, the orchestrator would see:
+  - `thinking` blocks with the SubAgent's internal reasoning
+  - `exec` logs showing every shell command and its output
+  - Intermediate messages and token counts
+  
+  This noise pollutes the orchestrator's context and makes responses unparseable. With Clean Output enabled, stderr is redirected to `/dev/null`, ensuring reliable agent-to-agent communication
 
 ![Create SubAgent UI](docs/images/create-subagent-ui.png)
 

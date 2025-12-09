@@ -42,12 +42,15 @@ Handle follow-ups with \`commands.resume\`.
  */
 export const generateCodexIndividualCommand = (
   agent: SubAgent,
-  agentDir: string
+  subagentsDir: string
 ): string => {
-  const resolvedStart = agent.commands.start.replace(/\$AGENT_DIR/g, agentDir);
+  const resolvedStart = agent.commands.start.replace(
+    /\$SUBAGENTS_DIR/g,
+    subagentsDir
+  );
   const resolvedResume = agent.commands.resume.replace(
-    /\$AGENT_DIR/g,
-    agentDir
+    /\$SUBAGENTS_DIR/g,
+    subagentsDir
   );
 
   return `---
@@ -79,12 +82,15 @@ Replace $SESSION_ID and $ANSWER when resuming.
  */
 export const generateClaudeIndividualCommand = (
   agent: SubAgent,
-  agentDir: string
+  subagentsDir: string
 ): string => {
-  const resolvedStart = agent.commands.start.replace(/\$AGENT_DIR/g, agentDir);
+  const resolvedStart = agent.commands.start.replace(
+    /\$SUBAGENTS_DIR/g,
+    subagentsDir
+  );
   const resolvedResume = agent.commands.resume.replace(
-    /\$AGENT_DIR/g,
-    agentDir
+    /\$SUBAGENTS_DIR/g,
+    subagentsDir
   );
 
   return `---

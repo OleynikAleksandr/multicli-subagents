@@ -138,12 +138,17 @@ export class DeployedService {
 
   /**
    * Cleanup when last agent is undeployed
+   * Removes entire .subagents folder and all slash commands
    */
   private async _cleanupLastAgent(
     source: "project" | "global",
     homeDir: string,
     baseDir: string
   ): Promise<void> {
+    // Remove entire .subagents folder (manifest, scripts, logs, etc.)
+    const subagentsDir = join(baseDir, ".subagents");
+    await rm(subagentsDir, { recursive: true, force: true });
+
     // Remove subagent-auto command
     const codexAutoCommand = join(
       homeDir,

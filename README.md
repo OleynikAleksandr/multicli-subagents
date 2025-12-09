@@ -2,7 +2,7 @@
 
 **VS Code Extension for managing AI Sub-Agents across CLI tools (Codex CLI, Claude Code CLI).**
 
-![Version](https://img.shields.io/badge/version-0.0.20-blue)
+![Version](https://img.shields.io/badge/version-0.0.23-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -23,6 +23,7 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent (if not done automatically)
 - **Auto-Routing** — The Main Orchestrator Agent receives a global instruction to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
 - **Import/Export** — Share SubAgents between users via `.subagent` files
+- **Clean Orchestrator Output** — SubAgent responses are clean and parseable. Internal logs (`thinking`, `exec`) are suppressed via `2>/dev/null`, so the Main Agent receives only the final answer
 
 ![Create SubAgent UI](docs/images/create-subagent-ui.png)
 

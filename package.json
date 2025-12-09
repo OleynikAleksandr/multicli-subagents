@@ -2,7 +2,7 @@
   "name": "multicli-subagents",
   "displayName": "SubAgent Manager",
   "description": "Manage CLI Sub-Agents inside VS Code",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "publisher": "OleksandrOliinyk",
   "repository": {
     "type": "git",

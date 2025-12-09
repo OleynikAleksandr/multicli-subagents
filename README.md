@@ -2,7 +2,7 @@
 
 **VS Code Extension for managing AI Sub-Agents across CLI tools (Codex CLI, Claude Code CLI).**
 
-![Version](https://img.shields.io/badge/version-0.0.23-blue)
+![Version](https://img.shields.io/badge/version-0.0.24-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -15,20 +15,15 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Visual Editor** — Create and edit SubAgents with a rich UI
 - **Library** — Personal collection of reusable SubAgents  
 - **Deploy** — One-click deploy to Project or Global scope
-- **Multi-CLI** — Works with Codex CLI and Claude Code CLI as Main Orchestrator Agents. Creates SubAgents for either Codex CLI or Claude Code CLI. Requires user authorization in Codex CLI and Claude Code CLI.
+- **Multi-CLI** — Works with Codex CLI and Claude Code CLI as Main Orchestrator Agents. Creates SubAgents for either Codex CLI or Claude Code CLI.
 - **Interactive Conversation** — SubAgents support full interactive dialogue, not just one-shot responses
+- **Real-time Logging (Codex)** — When a Codex SubAgent runs, a Terminal window automatically opens showing full verbose output (thinking, tool calls, exec logs). The Orchestrator receives **only the final answer** to save tokens, while you can observe the full work in real-time.
 - **Slash Commands** — Auto-generated slash commands for manual SubAgent invocation:
   - Codex CLI: `/prompts:subagent-{name}` (e.g., `/prompts:subagent-translator`)
   - Claude Code: `/subagent-{name}` (e.g., `/subagent-translator`)
-- **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent (if not done automatically)
+- **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent
 - **Auto-Routing** — The Main Orchestrator Agent receives a global instruction to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
 - **Import/Export** — Share SubAgents between users via `.subagent` files
-- **Clean Orchestrator Output** — When the Main Agent calls a SubAgent, it receives **only the final answer**, not the entire stream of internal processing. Without this, the orchestrator would see:
-  - `thinking` blocks with the SubAgent's internal reasoning
-  - `exec` logs showing every shell command and its output
-  - Intermediate messages and token counts
-  
-  This noise pollutes the orchestrator's context and makes responses unparseable. With Clean Output enabled, stderr is redirected to `/dev/null`, ensuring reliable agent-to-agent communication
 
 ![Create SubAgent UI](docs/images/create-subagent-ui.png)
 
@@ -66,16 +61,19 @@ After deploy, use in Codex CLI or Claude Code CLI:
 ## Architecture
 
 ```
-~/.subagents/           # Global SubAgents storage
-├── manifest.json       # Registry of deployed agents
-└── {agent}/            # Agent directory
-    └── {agent}.md      # Agent instructions
+~/.subagents/             # Global SubAgents storage
+├── manifest.json         # Registry of deployed agents
+├── start.sh              # Universal start script
+├── resume.sh             # Universal resume script
+├── subagent.log          # Real-time log (Codex only)
+└── {agent}/              # Agent directory
+    └── {agent}.md        # Agent instructions
 
-~/.codex/prompts/       # Codex slash commands
-└── subagent-{name}.md  # Individual agent command
+~/.codex/prompts/         # Codex slash commands
+└── subagent-{name}.md    # Individual agent command
 
-~/.claude/commands/     # Claude slash commands  
-└── subagent-{name}.md  # Individual agent command
+~/.claude/commands/       # Claude slash commands  
+└── subagent-{name}.md    # Individual agent command
 ```
 
 ## Documentation

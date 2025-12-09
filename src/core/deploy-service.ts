@@ -12,6 +12,7 @@ import {
   generateClaudeIndividualCommand,
   generateCodexIndividualCommand,
 } from "./command-templates";
+import { ensureScripts } from "./script-generator";
 
 /**
  * Manifest file structure for .subagents/manifest.json
@@ -51,9 +52,12 @@ export class DeployService {
     // 2. Write instructions file
     await writeFile(agentFile, agent.instructions, "utf-8");
 
-    // 3. Update manifest.json - resolves $AGENT_DIR to actual path
+    // 3. Ensure start.sh and resume.sh scripts exist
+    await ensureScripts(subagentsDir);
+
+    // 4. Update manifest.json - uses scripts for commands
     const manifest = await this._loadOrCreateManifest(manifestFile);
-    this._upsertAgentInManifest(manifest, agent, agentDir);
+    this._upsertAgentInManifest(manifest, agent, subagentsDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
     // 4. Create slash commands
@@ -86,9 +90,12 @@ export class DeployService {
     // 2. Write instructions file
     await writeFile(agentFile, agent.instructions, "utf-8");
 
-    // 3. Update manifest.json - resolves $AGENT_DIR to actual path
+    // 3. Ensure start.sh and resume.sh scripts exist
+    await ensureScripts(subagentsDir);
+
+    // 4. Update manifest.json - uses scripts for commands
     const manifest = await this._loadOrCreateManifest(manifestFile);
-    this._upsertAgentInManifest(manifest, agent, agentDir);
+    this._upsertAgentInManifest(manifest, agent, subagentsDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
     // 4. Create global slash commands for both CLIs

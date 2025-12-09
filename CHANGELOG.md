@@ -2,6 +2,18 @@
 
 All notable changes to **SubAgent Manager** are documented here.
 
+## [0.0.24] - 2025-12-09
+
+### Added
+- **Real-time Logging (Codex)** — When a Codex SubAgent runs, a Terminal window automatically opens showing full verbose output (thinking, tool calls, exec logs). The Orchestrator receives only the final answer to save tokens.
+- **Session ID Extraction (Codex)** — Session ID is now extracted from stderr and appended to stdout as `[SESSION_ID: uuid]` for resume functionality.
+- `src/core/script-generator.ts` — Universal `start.sh` and `resume.sh` scripts for both vendors
+
+### Changed
+- **Claude Simplified Mode** — Claude SubAgents now run in simple text output mode without logging (Claude CLI doesn't support verbose stderr in print mode). Resume uses `--continue` flag.
+- **Conditional Terminal** — Terminal window with log viewer opens only for Codex, not for Claude.
+- **Commands via Scripts** — All SubAgent commands now use `start.sh`/`resume.sh` wrapper scripts instead of direct CLI calls
+
 ## [0.0.23] - 2025-12-09
 
 ### Fixed

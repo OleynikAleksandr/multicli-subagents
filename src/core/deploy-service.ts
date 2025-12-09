@@ -60,11 +60,11 @@ export class DeployService {
     this._upsertAgentInManifest(manifest, agent, subagentsDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
-    // 4. Create slash commands
+    // 5. Create slash commands
     // Codex: ONLY global (~/.codex/prompts/) - Codex doesn't support project-level prompts
-    await this._createCodexCommands(homeDir, agent, agentDir);
+    await this._createCodexCommands(homeDir, agent, subagentsDir);
     // Claude: project-level (.claude/commands/)
-    await this._createClaudeCommands(rootPath, agent, agentDir);
+    await this._createClaudeCommands(rootPath, agent, subagentsDir);
 
     // 5. Ensure auto-routing instructions in global CLI config files
     const autoRouting = new AutoRoutingService();
@@ -98,9 +98,9 @@ export class DeployService {
     this._upsertAgentInManifest(manifest, agent, subagentsDir);
     await writeFile(manifestFile, JSON.stringify(manifest, null, 2), "utf-8");
 
-    // 4. Create global slash commands for both CLIs
-    await this._createCodexCommands(homeDir, agent, agentDir);
-    await this._createClaudeGlobalCommands(homeDir, agent, agentDir);
+    // 5. Create global slash commands for both CLIs
+    await this._createCodexCommands(homeDir, agent, subagentsDir);
+    await this._createClaudeGlobalCommands(homeDir, agent, subagentsDir);
 
     // 5. Ensure auto-routing instructions in global CLI config files
     const autoRouting = new AutoRoutingService();
@@ -163,7 +163,7 @@ export class DeployService {
   private async _createCodexCommands(
     homeDir: string,
     agent: SubAgent,
-    agentDir: string
+    subagentsDir: string
   ): Promise<void> {
     const codexPromptsDir = join(homeDir, ".codex", "prompts");
     await mkdir(codexPromptsDir, { recursive: true });
@@ -178,7 +178,7 @@ export class DeployService {
     // Individual command for this agent
     await writeFile(
       join(codexPromptsDir, `subagent-${agent.name}.md`),
-      generateCodexIndividualCommand(agent, agentDir),
+      generateCodexIndividualCommand(agent, subagentsDir),
       "utf-8"
     );
   }
@@ -191,7 +191,7 @@ export class DeployService {
   private async _createClaudeCommands(
     rootPath: string,
     agent: SubAgent,
-    agentDir: string
+    subagentsDir: string
   ): Promise<void> {
     const claudeCommandsDir = join(rootPath, ".claude", "commands");
     await mkdir(claudeCommandsDir, { recursive: true });
@@ -206,7 +206,7 @@ export class DeployService {
     // Individual command for this agent
     await writeFile(
       join(claudeCommandsDir, `subagent-${agent.name}.md`),
-      generateClaudeIndividualCommand(agent, agentDir),
+      generateClaudeIndividualCommand(agent, subagentsDir),
       "utf-8"
     );
   }
@@ -219,7 +219,7 @@ export class DeployService {
   private async _createClaudeGlobalCommands(
     homeDir: string,
     agent: SubAgent,
-    agentDir: string
+    subagentsDir: string
   ): Promise<void> {
     const claudeCommandsDir = join(homeDir, ".claude", "commands");
     await mkdir(claudeCommandsDir, { recursive: true });
@@ -234,7 +234,7 @@ export class DeployService {
     // Individual command for this agent
     await writeFile(
       join(claudeCommandsDir, `subagent-${agent.name}.md`),
-      generateClaudeIndividualCommand(agent, agentDir),
+      generateClaudeIndividualCommand(agent, subagentsDir),
       "utf-8"
     );
   }

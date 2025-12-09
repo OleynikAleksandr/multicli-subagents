@@ -22,7 +22,7 @@ const generateCommands = (
 
   if (vendor === "codex") {
     return {
-      start: `cd "${agentDir}" && codex exec --skip-git-repo-check --full-auto "First, read ${instructionsFile}. Then: $TASK"`,
+      start: `cd "${agentDir}" && codex exec --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox "First, read ${instructionsFile}. Then: $TASK"`,
       resume: `cd "${agentDir}" && codex exec resume $SESSION_ID "$ANSWER"`,
     };
   }

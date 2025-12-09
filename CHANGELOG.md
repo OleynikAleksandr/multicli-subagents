@@ -14,6 +14,10 @@ All notable changes to **SubAgent Manager** are documented here.
 - **Conditional Terminal** — Terminal window with log viewer opens only for Codex, not for Claude.
 - **Commands via Scripts** — All SubAgent commands now use `start.sh`/`resume.sh` wrapper scripts instead of direct CLI calls
 
+### Fixed
+- **Full Cleanup on Last Undeploy** — When the last SubAgent is undeployed, the entire `.subagents/` folder is now removed (including scripts, logs, and manifest)
+- **Slash Command Templates** — Slash command files now correctly use the script-based command format
+
 ## [0.0.23] - 2025-12-09
 
 ### Fixed

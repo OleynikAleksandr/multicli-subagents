@@ -18,6 +18,7 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
 - **Multi-CLI** — Works with Codex CLI and Claude Code CLI as Main Orchestrator Agents. Creates SubAgents for either Codex CLI or Claude Code CLI.
 - **Interactive Conversation** — SubAgents support full interactive dialogue, not just one-shot responses
 - **Real-time Logging (Codex)** — When a Codex SubAgent runs, a Terminal window automatically opens showing full verbose output (thinking, tool calls, exec logs). The Orchestrator receives **only the final answer** to save tokens, while you can observe the full work in real-time.
+- **Full Autonomy** — SubAgents run with maximum permissions: Codex uses `--dangerously-bypass-approvals-and-sandbox`, Claude uses `--dangerously-skip-permissions`.
 - **Slash Commands** — Auto-generated slash commands for manual SubAgent invocation:
   - Codex CLI: `/prompts:subagent-{name}` (e.g., `/prompts:subagent-translator`)
   - Claude Code: `/subagent-{name}` (e.g., `/subagent-translator`)

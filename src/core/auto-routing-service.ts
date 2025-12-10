@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
 import { join } from "node:path";
+// biome-ignore lint/performance/noNamespaceImport: VS Code API requires namespace import
+import * as vscode from "vscode";
 
 /**
  * Marker to detect if auto-routing section already exists
@@ -9,7 +10,7 @@ const ROUTING_MARKER_START = "<!-- SUBAGENT-ROUTING -->";
 const ROUTING_MARKER_END = "<!-- /SUBAGENT-ROUTING -->";
 
 /**
- * Auto-routing section for Codex CLI (AGENTS.md)
+ * Auto-routing section for Codex CLI (workspace AGENTS.md)
  */
 const CODEX_ROUTING_SECTION = `
 ${ROUTING_MARKER_START}
@@ -25,21 +26,37 @@ ${ROUTING_MARKER_START}
     *   *Example:* Request "Fix these bugs" matches Agent "Debugger".
 3.  🛑 **DECISION**:
     *   **IF MATCH FOUND**: You are **FORBIDDEN** from performing the task yourself with your own tools.
-        *   You **MUST** delegate to the matching SubAgent immediately.
+        *   You **MUST** delegate immediately using the \`commands.start\` from the manifest.
         *   **Do NOT** ask for confirmation.
         *   **Do NOT** attempt to "quickly fix" it yourself.
     *   **INTERACTION PROTOCOL**:
-        *   **IF SubAgent asks a question**: You **MUST** answer it.
-            *   **IF you know the answer**: Answer directly.
+        *   **IF SubAgent asks a question**: You **MUST** answer it using \`commands.resume\`.
+            *   **IF you know the answer**: Answer directly using \`commands.resume\`.
             *   **IF you DON'T know**: Ask the User in chat, wait for their response, and THEN relay it to the SubAgent using \`commands.resume\`.
     *   **IF NO MATCH**: Proceed with your own standard tools.
+
+## 🔧 TECHNICAL: How to Execute SubAgent Commands
+
+\`\`\`
+# Step 1: Start (goes to background immediately)
+run_command(CommandLine="<command from manifest>", WaitMsBeforeAsync=500)
+# Returns: Background command ID: <id>
+
+# Step 2: Wait for completion
+command_status(CommandId="<id>", WaitDurationSeconds=60)
+# Keep checking until Status: DONE
+\`\`\`
+
+- **Run as background task**: Use \`WaitMsBeforeAsync: 500\` (small value to send to background)
+- **Wait for completion**: Use \`command_status\` with \`WaitDurationSeconds: 60\` (or more for complex tasks)
+- **Read the final output**: SubAgent's response is at the end of stdout
 
 **Philosophy**: "Never manually do what a SubAgent is configured to do."
 ${ROUTING_MARKER_END}
 `;
 
 /**
- * Auto-routing section for Claude Code CLI (CLAUDE.md)
+ * Auto-routing section for Claude Code CLI (workspace CLAUDE.md)
  */
 const CLAUDE_ROUTING_SECTION = `
 ${ROUTING_MARKER_START}
@@ -55,14 +72,30 @@ ${ROUTING_MARKER_START}
     *   *Example:* Request "Fix these bugs" matches Agent "Debugger".
 3.  🛑 **DECISION**:
     *   **IF MATCH FOUND**: You are **FORBIDDEN** from performing the task yourself with your own tools.
-        *   You **MUST** delegate to the matching SubAgent immediately.
+        *   You **MUST** delegate immediately using the \`commands.start\` from the manifest.
         *   **Do NOT** ask for confirmation.
         *   **Do NOT** attempt to "quickly fix" it yourself.
     *   **INTERACTION PROTOCOL**:
-        *   **IF SubAgent asks a question**: You **MUST** answer it.
-            *   **IF you know the answer**: Answer directly.
+        *   **IF SubAgent asks a question**: You **MUST** answer it using \`commands.resume\`.
+            *   **IF you know the answer**: Answer directly using \`commands.resume\`.
             *   **IF you DON'T know**: Ask the User in chat, wait for their response, and THEN relay it to the SubAgent using \`commands.resume\`.
     *   **IF NO MATCH**: Proceed with your own standard tools.
+
+## 🔧 TECHNICAL: How to Execute SubAgent Commands
+
+\`\`\`
+# Step 1: Start (goes to background immediately)
+run_command(CommandLine="<command from manifest>", WaitMsBeforeAsync=500)
+# Returns: Background command ID: <id>
+
+# Step 2: Wait for completion
+command_status(CommandId="<id>", WaitDurationSeconds=60)
+# Keep checking until Status: DONE
+\`\`\`
+
+- **Run as background task**: Use \`WaitMsBeforeAsync: 500\` (small value to send to background)
+- **Wait for completion**: Use \`command_status\` with \`WaitDurationSeconds: 60\` (or more for complex tasks)
+- **Read the final output**: SubAgent's response is at the end of stdout
 
 **Philosophy**: "Never manually do what a SubAgent is configured to do."
 ${ROUTING_MARKER_END}
@@ -73,19 +106,24 @@ ${ROUTING_MARKER_END}
  */
 export class AutoRoutingService {
   /**
-   * Ensure auto-routing section exists in global CLI config files
-   * Called on first deploy
+   * Ensure auto-routing section exists in workspace-level CLI config files
+   * Called on first deploy (project or global)
    */
   async ensureAutoRoutingInstructions(): Promise<void> {
-    const homeDir = homedir();
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return;
+    }
+
+    const rootPath = workspaceFolders[0].uri.fsPath;
 
     await Promise.all([
       this._ensureRoutingInFile(
-        join(homeDir, ".codex", "AGENTS.md"),
+        join(rootPath, "AGENTS.md"),
         CODEX_ROUTING_SECTION
       ),
       this._ensureRoutingInFile(
-        join(homeDir, ".claude", "CLAUDE.md"),
+        join(rootPath, "CLAUDE.md"),
         CLAUDE_ROUTING_SECTION
       ),
     ]);
@@ -117,15 +155,20 @@ export class AutoRoutingService {
   }
 
   /**
-   * Remove auto-routing section from global CLI config files
+   * Remove auto-routing section from workspace-level CLI config files
    * Called when last SubAgent is undeployed
    */
   async removeAutoRoutingInstructions(): Promise<void> {
-    const homeDir = homedir();
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return;
+    }
+
+    const rootPath = workspaceFolders[0].uri.fsPath;
 
     await Promise.all([
-      this._removeRoutingFromFile(join(homeDir, ".codex", "AGENTS.md")),
-      this._removeRoutingFromFile(join(homeDir, ".claude", "CLAUDE.md")),
+      this._removeRoutingFromFile(join(rootPath, "AGENTS.md")),
+      this._removeRoutingFromFile(join(rootPath, "CLAUDE.md")),
     ]);
   }
 

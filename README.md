@@ -2,7 +2,7 @@
 
 **VS Code Extension for managing AI Sub-Agents across CLI tools (Codex CLI, Claude Code CLI).**
 
-![Version](https://img.shields.io/badge/version-0.0.24-blue)
+![Version](https://img.shields.io/badge/version-0.0.25-blue)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -24,7 +24,7 @@ SubAgent Manager lets you create, organize, and deploy specialized AI assistants
   - Codex CLI: `/prompts:subagent-{name}` (e.g., `/prompts:subagent-translator`)
   - Claude Code: `/subagent-{name}` (e.g., `/subagent-translator`)
 - **Auto-Select Command** — Automatically creates `/subagent-auto` command that reminds the Orchestrator Agent to read the manifest and select the appropriate SubAgent
-- **Auto-Routing** — The Main Orchestrator Agent receives a global instruction to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
+- **Auto-Routing** — The Main Orchestrator Agent receives a workspace-level instruction (in `AGENTS.md` / `CLAUDE.md` under the project root) to review the SubAgents Manifest and automatically delegate tasks to the most suitable SubAgent based on its specialization
 - **Import/Export** — Share SubAgents between users via `.subagent` files
 
 ![Create SubAgent UI](docs/images/create-subagent-ui.png)
@@ -77,19 +77,24 @@ Instructions: |
 ## Architecture
 
 ```
-~/.subagents/             # Global SubAgents storage
-├── manifest.json         # Registry of deployed agents
-├── start.sh              # Universal start script
-├── resume.sh             # Universal resume script
-├── subagent.log          # Real-time log (Codex only)
-└── {agent}/              # Agent directory
-    └── {agent}.md        # Agent instructions
+~/.subagents/                  # Global SubAgents storage
+├── manifest.json              # Registry of deployed agents
+├── start.sh                   # Universal start script
+├── resume.sh                  # Universal resume script
+├── subagent.log               # Real-time log (Codex only)
+└── {agent}/                   # Agent directory
+    └── {agent}.md             # Agent instructions
 
-~/.codex/prompts/         # Codex slash commands
-└── subagent-{name}.md    # Individual agent command
+~/.codex/prompts/              # Codex slash commands
+└── subagent-{name}.md         # Individual agent command
 
-~/.claude/commands/       # Claude slash commands  
-└── subagent-{name}.md    # Individual agent command
+~/.claude/commands/            # Claude slash commands  
+└── subagent-{name}.md         # Individual agent command
+
+<workspace-root>/              # Per-project routing and commands
+├── AGENTS.md                  # Workspace routing instructions for Codex Orchestrator
+├── CLAUDE.md                  # Workspace routing instructions for Claude Orchestrator
+└── .subagents/ (optional)     # Project-local SubAgents storage (same layout as ~/.subagents/)
 ```
 
 ## Documentation

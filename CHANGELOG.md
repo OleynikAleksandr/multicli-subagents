@@ -2,6 +2,15 @@
 
 All notable changes to **SubAgent Manager** are documented here.
 
+## [0.0.25] - 2025-12-10
+
+### Changed
+- **Workspace-Scoped Auto-Routing** — SubAgent auto-routing instructions are now injected into `AGENTS.md` and `CLAUDE.md` in the **workspace root** instead of the global `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md`. This keeps the delegation protocol project-specific and avoids mutating a user's global CLI configuration.
+- **Orchestrator Protocol Clarity** — The `<!-- SUBAGENT-ROUTING -->` block now explicitly describes how the Orchestrator should call SubAgents using `commands.start` / `commands.resume` from the manifest, including concrete `run_command` / `command_status` examples.
+
+### Fixed
+- **SubAgent Isolation from Orchestrator Rules** — By moving the routing block to workspace files (which are ignored by Git), SubAgents no longer unintentionally receive Orchestrator-only global instructions when they run in their own sandboxes.
+
 ## [0.0.24] - 2025-12-09
 
 ### Added
